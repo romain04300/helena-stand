@@ -56,6 +56,66 @@ let cheminActuel = null;   // le chemin de vie de la visiteuse en cours
 
 
 // ==============================
+// FRÉQUENTATION : COMPTEURS
+// ==============================
+function compter(cle) {
+    let stats = lire("hf-stats", {});
+    if (!stats.depuis) {
+        stats.depuis = new Date().toLocaleDateString("fr-FR");
+    }
+    stats[cle] = (stats[cle] || 0) + 1;
+    ecrire("hf-stats", stats);
+}
+
+function compterChemin(total) {
+    let stats = lire("hf-stats", {});
+    stats.chemins = stats.chemins || {};
+    stats.chemins[total] = (stats.chemins[total] || 0) + 1;
+    ecrire("hf-stats", stats);
+}
+
+// Transforme « Maxime + 05/03/1990 » en un code illisible (on ne garde ni le prénom ni la date)
+function empreinte(texte) {
+    let h1 = 0xdeadbeef, h2 = 0x41c6ce57;
+    for (let i = 0; i < texte.length; i++) {
+        let c = texte.charCodeAt(i);
+        h1 = Math.imul(h1 ^ c, 2654435761);
+        h2 = Math.imul(h2 ^ c, 1597334677);
+    }
+    h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+    h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+    return (4294967296 * (2097151 & h2) + (h1 >>> 0)).toString(36);
+}
+
+// Compte une personne UNE SEULE FOIS : même prénom + même date = même personne
+function compterPersonne(prenom, jour, mois, annee) {
+    let prenomPropre = prenom.trim().toLowerCase()
+        .normalize("NFD").replace(/[\u0300-\u036f]/g, "")   // enlève les accents : Hélèna = helena
+        .replace(/\s+/g, " ");                               // espaces en trop
+    let cle = empreinte(prenomPropre + "|" + jour + "-" + mois + "-" + annee);
+    let stats = lire("hf-stats", {});
+    if (!stats.depuis) {
+        stats.depuis = new Date().toLocaleDateString("fr-FR");
+    }
+    stats.personnes = stats.personnes || [];
+    if (!stats.personnes.includes(cle)) {
+        stats.personnes.push(cle);
+    }
+    ecrire("hf-stats", stats);
+}
+
+function commencer() {
+    compter("visites");
+    allerA("saisie");
+}
+
+function voirOffres() {
+    compter("offres");
+    allerA("offres");
+}
+
+
+// ==============================
 // NAVIGATION ENTRE LES PAGES
 // ==============================
 function allerA(page) {
@@ -137,6 +197,9 @@ function valider() {
 
     let total = calculerChemin(jour + mois + annee);
     cheminActuel = total;
+    compter("calculs");
+    compterChemin(total);
+    compterPersonne(prenom, jour, mois, annee);
     let morceaux = forces[total].split(" : ");   // "le Leader" | "Autonomie, Leadership, Commencement"
 
     document.getElementById("titre-revelation").textContent = prenom + ", ton chemin de vie est";
@@ -158,14 +221,31 @@ function valider() {
 // ==============================
 // NUMÉROLOGIE FLASH : LISTE D'ATTENTE
 // ==============================
+function creneauxPris() {
+    let pris = [];
+    for (let personne of lire("hf-flash", [])) {
+        pris.push(personne.creneau);
+    }
+    return pris;
+}
+
 function ouvrirFlash() {
     let menu = document.getElementById("flash-creneau");
+    let pris = creneauxPris();
+    let libres = 0;
     menu.innerHTML = '<option value="">Choisis un créneau</option>';
     for (let creneau of reglages.creneaux.split(",")) {
         creneau = creneau.trim();
-        if (creneau !== "") {
+        if (creneau !== "" && !pris.includes(creneau)) {
             menu.innerHTML += "<option>" + creneau + "</option>";
+            libres = libres + 1;
         }
+    }
+    // s'il ne reste aucun créneau, on le dit
+    if (libres === 0) {
+        document.getElementById("plus-de-creneau").classList.remove("cachee");
+    } else {
+        document.getElementById("plus-de-creneau").classList.add("cachee");
     }
     allerA("flash");
 }
@@ -177,9 +257,15 @@ function inscrireFlash() {
         document.getElementById("erreur-flash").textContent = "Il manque ton prénom ou ton créneau.";
         return;
     }
+    if (creneauxPris().includes(creneau)) {
+        document.getElementById("erreur-flash").textContent = "Ce créneau vient d'être pris, choisis-en un autre.";
+        ouvrirFlash();
+        return;
+    }
     let liste = lire("hf-flash", []);
     liste.push({ prenom: prenom, creneau: creneau, chemin: cheminActuel });
     ecrire("hf-flash", liste);
+    compter("flash");
 
     document.getElementById("titre-merci").textContent = "C'est noté, " + prenom + " !";
     document.getElementById("texte-merci").textContent = "Hélèna t'attend à " + creneau + " pour ta numérologie flash.";
@@ -213,6 +299,7 @@ function enregistrerContact() {
         date: new Date().toLocaleString("fr-FR"),
     });
     ecrire("hf-contacts", contacts);
+    compter("ebook");
 
     document.getElementById("titre-merci").textContent = "Merci " + prenom + " !";
     document.getElementById("texte-merci").textContent = "Hélèna t'enverra ton e-book Chemin de Vie " + cheminActuel + " par e-mail.";
@@ -267,9 +354,65 @@ function verifierCode() {
     }
 }
 
+function afficherStats() {
+    let stats = lire("hf-stats", {});
+    document.getElementById("stats-depuis").textContent = stats.depuis ? "Depuis le " + stats.depuis : "Aucune visite pour l'instant.";
+    let lignes = [
+        ["Personnes différentes (prénom + date)", (stats.personnes || []).length],
+        ["Passages (appuis sur « Commencer »)", stats.visites || 0],
+        ["Chemins de vie calculés", stats.calculs || 0],
+        ["Ont regardé les offres", stats.offres || 0],
+        ["Inscriptions numérologie flash", stats.flash || 0],
+        ["Demandes d'e-book", stats.ebook || 0],
+    ];
+    let zone = document.getElementById("stats");
+    zone.innerHTML = "";
+    for (let ligne of lignes) {
+        let p = document.createElement("p");
+        p.className = "stat-ligne";
+        p.innerHTML = "<span></span><b></b>";
+        p.querySelector("span").textContent = ligne[0];
+        p.querySelector("b").textContent = ligne[1];
+        zone.appendChild(p);
+    }
+    // les chemins de vie les plus fréquents
+    let chemins = stats.chemins || {};
+    let classement = Object.keys(chemins).sort(function (a, b) { return chemins[b] - chemins[a]; });
+    if (classement.length > 0) {
+        let p = document.createElement("p");
+        p.className = "petit";
+        let morceaux = [];
+        for (let c of classement) {
+            morceaux.push("CDV " + c + " : " + chemins[c]);
+        }
+        p.textContent = "Chemins de vie : " + morceaux.join(" · ");
+        zone.appendChild(p);
+    }
+    document.getElementById("msg-stats").textContent = "";
+}
+
+let confirmationStats = false;
+
+function remettreStatsAZero() {
+    if (!confirmationStats) {
+        confirmationStats = true;
+        document.getElementById("msg-stats").textContent = "Appuie encore une fois pour confirmer.";
+        setTimeout(function () { confirmationStats = false; }, 5000);
+        return;
+    }
+    confirmationStats = false;
+    ecrire("hf-stats", {});
+    afficherStats();
+    document.getElementById("msg-stats").textContent = "Compteurs remis à zéro.";
+}
+
 function afficherAdmin() {
-    // liste d'attente flash
+    afficherStats();
+
+    // liste d'attente flash, rangée dans l'ordre des créneaux
+    let ordre = reglages.creneaux.split(",").map(function (c) { return c.trim(); });
     let liste = lire("hf-flash", []);
+    liste.sort(function (a, b) { return ordre.indexOf(a.creneau) - ordre.indexOf(b.creneau); });
     let zone = document.getElementById("liste-flash");
     zone.innerHTML = "";
     if (liste.length === 0) {

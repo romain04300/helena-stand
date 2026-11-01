@@ -257,3 +257,17 @@ body { padding-bottom: 96px; }
     .pied-nom { font-size: 18px; }
     .pied-metier { font-size: 10px; letter-spacing: 0.03em; }
 }
+
+/* ==============================
+   FRÉQUENTATION (espace Hélèna)
+   ============================== */
+.stat-ligne {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    border-bottom: 1px dashed var(--bordure);
+    padding: 8px 4px;
+    font-size: 20px;
+    text-align: left;
+}
+.stat-ligne b { color: var(--violet); font-family: "Libre Baskerville", serif; font-size: 24px; }

@@ -22,7 +22,7 @@
     <img src="logo-rond.png" class="logo-tourne" id="logo" alt="Hélèna Fuma">
     <h1>Découvre ce que ta date de naissance <em>dit de toi</em></h1>
     <p>Ton histoire t'appartient. Ton avenir aussi.</p>
-    <button onclick="allerA('saisie')">Commencer</button>
+    <button onclick="commencer()">Commencer</button>
 </section>
 
 <!-- ========== PAGE 2 : SAISIE ========== -->
@@ -47,7 +47,7 @@
     <div id="chiffre" class="chiffre"></div>
     <p id="profil" class="profil"></p>
     <p id="forces" class="forces"></p>
-    <button onclick="allerA('offres')">Ce n'est que le début…</button>
+    <button onclick="voirOffres()">Ce n'est que le début…</button>
 </section>
 
 <!-- ========== PAGE 4 : LES OFFRES ========== -->
@@ -85,6 +85,7 @@
     <input id="flash-prenom" type="text" autocomplete="off">
     <p class="etiquette">Ton créneau</p>
     <select id="flash-creneau"></select>
+    <p id="plus-de-creneau" class="petit cachee">Tous les créneaux sont pris pour aujourd'hui. Demande directement à Hélèna !</p>
     <p id="erreur-flash" class="erreur"></p>
     <button onclick="inscrireFlash()">Je réserve</button>
     <button class="secondaire" onclick="allerA('offres')">Retour</button>
@@ -130,6 +131,14 @@
 <!-- ========== ESPACE HÉLÈNA : GESTION ========== -->
 <section id="admin" class="cachee">
     <h1>Espace <em>Hélèna</em></h1>
+
+    <div class="carte large">
+        <h2>Fréquentation</h2>
+        <p id="stats-depuis" class="petit"></p>
+        <div id="stats"></div>
+        <button class="secondaire" onclick="remettreStatsAZero()">Remettre à zéro</button>
+        <p id="msg-stats" class="petit"></p>
+    </div>
 
     <div class="carte large">
         <h2>Liste d'attente flash</h2>
