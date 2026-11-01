@@ -1,0 +1,365 @@
+// ==============================
+// RÉGLAGES PAR DÉFAUT
+// (Hélèna peut les changer dans son espace : 5 appuis rapides sur le logo)
+// ==============================
+const reglagesParDefaut = {
+    prixEbook: "28",
+    prixFlash: "20",
+    creneaux: "10h00, 10h30, 11h00, 11h30, 14h00, 14h30, 15h00, 15h30, 16h00, 16h30",
+    code: "2026",
+};
+
+const maitres = [11, 22, 33, 44];
+
+const forces = {
+    1: "le Leader : Autonomie, Leadership, Commencement",
+    2: "le Diplomate : Alliance, Diplomatie, Sensibilité",
+    3: "l'Artiste : Créativité, Expression, Joie",
+    4: "le Bâtisseur : Structure, Rigueur, Fiabilité",
+    5: "l'Aventurier : Liberté, Mouvement, Curiosité",
+    6: "le Protecteur : Amour, Responsabilité, Harmonie",
+    7: "le Chercheur : Introspection, Vérité, Mystère",
+    8: "le Stratège : Pouvoir, Abondance, Autorité",
+    9: "l'Humaniste : Compassion, Universel, Don de soi",
+    11: "l'Éveilleur : Intuition, Sensibilité, Vision",
+    22: "l'Architecte : Vision, Construction, Ambition",
+    33: "le Guérisseur : Amour, Guérison, Transmission",
+    44: "le Réformateur : Vision, Détachement, Décalage",
+};
+
+const DELAI_INACTIVITE = 60;   // secondes avant le retour automatique à l'accueil
+
+
+// ==============================
+// LA MÉMOIRE DE LA TABLETTE (fonctionne sans Internet)
+// ==============================
+function lire(cle, valeurParDefaut) {
+    try {
+        let texte = localStorage.getItem(cle);
+        return texte ? JSON.parse(texte) : valeurParDefaut;
+    } catch (e) {
+        return valeurParDefaut;
+    }
+}
+
+function ecrire(cle, valeur) {
+    try {
+        localStorage.setItem(cle, JSON.stringify(valeur));
+        return true;
+    } catch (e) {
+        return false;
+    }
+}
+
+let reglages = Object.assign({}, reglagesParDefaut, lire("hf-reglages", {}));
+let cheminActuel = null;   // le chemin de vie de la visiteuse en cours
+
+
+// ==============================
+// NAVIGATION ENTRE LES PAGES
+// ==============================
+function allerA(page) {
+    for (let section of document.querySelectorAll("section")) {
+        section.classList.add("cachee");
+    }
+    document.getElementById(page).classList.remove("cachee");
+    window.scrollTo(0, 0);
+}
+
+// Efface tout ce que la visiteuse a tapé et revient à l'accueil
+function recommencer() {
+    for (let champ of document.querySelectorAll("input")) {
+        if (champ.type === "checkbox") {
+            champ.checked = false;
+        } else {
+            champ.value = "";
+        }
+    }
+    for (let menu of document.querySelectorAll("select")) {
+        menu.selectedIndex = 0;
+    }
+    for (let erreur of document.querySelectorAll(".erreur")) {
+        erreur.textContent = "";
+    }
+    cheminActuel = null;
+    allerA("accueil");
+}
+
+
+// ==============================
+// PAGE SAISIE : LES MENUS DE LA DATE
+// ==============================
+function remplirDates() {
+    for (let j = 1; j <= 31; j++) {
+        document.getElementById("jour").innerHTML += "<option>" + j + "</option>";
+    }
+    let nomsMois = ["janvier", "février", "mars", "avril", "mai", "juin",
+                    "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
+    for (let m = 1; m <= 12; m++) {
+        document.getElementById("mois").innerHTML += '<option value="' + m + '">' + nomsMois[m - 1] + "</option>";
+    }
+    for (let a = 2012; a >= 1930; a--) {
+        document.getElementById("annee").innerHTML += "<option>" + a + "</option>";
+    }
+}
+
+
+// ==============================
+// LE CALCUL DU CHEMIN DE VIE (ton code Python, traduit)
+// ==============================
+function calculerChemin(date) {
+    let total = 0;
+    for (let chiffre of date) {
+        total = total + parseInt(chiffre);
+    }
+    while (total > 9 && !maitres.includes(total)) {
+        let texte = String(total);
+        total = parseInt(texte[0]) + parseInt(texte[1]);
+    }
+    return total;
+}
+
+
+// ==============================
+// BOUTON « DÉCOUVRIR »
+// ==============================
+function valider() {
+    let prenom = document.getElementById("prenom").value.trim();
+    let jour = document.getElementById("jour").value;
+    let mois = document.getElementById("mois").value;
+    let annee = document.getElementById("annee").value;
+
+    if (prenom === "" || jour === "" || mois === "" || annee === "") {
+        document.getElementById("erreur").textContent = "Il manque ton prénom ou ta date de naissance.";
+        return;
+    }
+    document.getElementById("erreur").textContent = "";
+
+    let total = calculerChemin(jour + mois + annee);
+    cheminActuel = total;
+    let morceaux = forces[total].split(" : ");   // "le Leader" | "Autonomie, Leadership, Commencement"
+
+    document.getElementById("titre-revelation").textContent = prenom + ", ton chemin de vie est";
+    document.getElementById("chiffre").textContent = total;
+    document.getElementById("profil").textContent = morceaux[0];
+    document.getElementById("forces").textContent = morceaux[1];
+
+    // on prépare la page des offres
+    document.getElementById("titre-ebook").textContent = "Mon e-book Chemin de Vie " + total;
+    document.getElementById("prix-ebook").textContent = "Prix salon : " + reglages.prixEbook + " €";
+    document.getElementById("prix-flash").textContent = reglages.prixFlash + " €";
+    document.getElementById("flash-prenom").value = prenom;
+    document.getElementById("contact-prenom").value = prenom;
+
+    allerA("revelation");
+}
+
+
+// ==============================
+// NUMÉROLOGIE FLASH : LISTE D'ATTENTE
+// ==============================
+function ouvrirFlash() {
+    let menu = document.getElementById("flash-creneau");
+    menu.innerHTML = '<option value="">Choisis un créneau</option>';
+    for (let creneau of reglages.creneaux.split(",")) {
+        creneau = creneau.trim();
+        if (creneau !== "") {
+            menu.innerHTML += "<option>" + creneau + "</option>";
+        }
+    }
+    allerA("flash");
+}
+
+function inscrireFlash() {
+    let prenom = document.getElementById("flash-prenom").value.trim();
+    let creneau = document.getElementById("flash-creneau").value;
+    if (prenom === "" || creneau === "") {
+        document.getElementById("erreur-flash").textContent = "Il manque ton prénom ou ton créneau.";
+        return;
+    }
+    let liste = lire("hf-flash", []);
+    liste.push({ prenom: prenom, creneau: creneau, chemin: cheminActuel });
+    ecrire("hf-flash", liste);
+
+    document.getElementById("titre-merci").textContent = "C'est noté, " + prenom + " !";
+    document.getElementById("texte-merci").textContent = "Hélèna t'attend à " + creneau + " pour ta numérologie flash.";
+    allerA("merci");
+}
+
+
+// ==============================
+// E-BOOK : CONTACT AVEC CONSENTEMENT
+// ==============================
+function ouvrirContact() {
+    allerA("contact");
+}
+
+function enregistrerContact() {
+    let prenom = document.getElementById("contact-prenom").value.trim();
+    let email = document.getElementById("contact-email").value.trim();
+    let accord = document.getElementById("consentement").checked;
+    let erreur = document.getElementById("erreur-contact");
+
+    if (prenom === "") { erreur.textContent = "Il manque ton prénom."; return; }
+    if (!email.includes("@") || !email.includes(".")) { erreur.textContent = "Ton e-mail n'a pas l'air complet."; return; }
+    if (!accord) { erreur.textContent = "Coche la case pour recevoir l'e-book."; return; }
+
+    let contacts = lire("hf-contacts", []);
+    contacts.push({
+        prenom: prenom,
+        email: email,
+        chemin: cheminActuel,
+        interet: "e-book Chemin de Vie " + cheminActuel,
+        date: new Date().toLocaleString("fr-FR"),
+    });
+    ecrire("hf-contacts", contacts);
+
+    document.getElementById("titre-merci").textContent = "Merci " + prenom + " !";
+    document.getElementById("texte-merci").textContent = "Hélèna t'enverra ton e-book Chemin de Vie " + cheminActuel + " par e-mail.";
+    allerA("merci");
+}
+
+
+// ==============================
+// RETOUR AUTOMATIQUE APRÈS 60 SECONDES SANS ACTION
+// ==============================
+let minuteur = null;
+
+function relancerMinuteur() {
+    clearTimeout(minuteur);
+    minuteur = setTimeout(function () {
+        let pageVisible = document.querySelector("section:not(.cachee)").id;
+        if (pageVisible !== "accueil" && pageVisible !== "admin") {
+            recommencer();
+        }
+    }, DELAI_INACTIVITE * 1000);
+}
+
+for (let evenement of ["click", "touchstart", "keydown", "input"]) {
+    document.addEventListener(evenement, relancerMinuteur);
+}
+
+
+// ==============================
+// ESPACE HÉLÈNA : 5 APPUIS RAPIDES SUR LE LOGO
+// ==============================
+let appuis = 0;
+let minuteurAppuis = null;
+
+document.getElementById("logo").addEventListener("click", function () {
+    appuis = appuis + 1;
+    clearTimeout(minuteurAppuis);
+    minuteurAppuis = setTimeout(function () { appuis = 0; }, 2000);
+    if (appuis >= 5) {
+        appuis = 0;
+        allerA("code");
+    }
+});
+
+function verifierCode() {
+    if (document.getElementById("code-saisi").value === reglages.code) {
+        document.getElementById("code-saisi").value = "";
+        document.getElementById("erreur-code").textContent = "";
+        afficherAdmin();
+        allerA("admin");
+    } else {
+        document.getElementById("erreur-code").textContent = "Code incorrect.";
+    }
+}
+
+function afficherAdmin() {
+    // liste d'attente flash
+    let liste = lire("hf-flash", []);
+    let zone = document.getElementById("liste-flash");
+    zone.innerHTML = "";
+    if (liste.length === 0) {
+        zone.innerHTML = '<p class="petit">Personne en attente.</p>';
+    }
+    for (let personne of liste) {
+        let ligne = document.createElement("p");
+        ligne.className = "ligne-attente";
+        ligne.textContent = personne.creneau + " · " + personne.prenom + " (chemin de vie " + (personne.chemin || "?") + ")";
+        zone.appendChild(ligne);
+    }
+
+    // contacts
+    let contacts = lire("hf-contacts", []);
+    document.getElementById("nb-contacts").textContent = contacts.length + " contact(s) enregistré(s) sur cette tablette.";
+    document.getElementById("msg-contacts").textContent = "";
+
+    // réglages
+    document.getElementById("r-prix-ebook").value = reglages.prixEbook;
+    document.getElementById("r-prix-flash").value = reglages.prixFlash;
+    document.getElementById("r-creneaux").value = reglages.creneaux;
+    document.getElementById("r-code").value = "";
+    document.getElementById("msg-reglages").textContent = "";
+}
+
+function viderFlash() {
+    ecrire("hf-flash", []);
+    afficherAdmin();
+}
+
+function exporterContacts() {
+    let contacts = lire("hf-contacts", []);
+    if (contacts.length === 0) {
+        document.getElementById("msg-contacts").textContent = "Aucun contact à exporter.";
+        return;
+    }
+    let lignes = ["prenom;email;chemin_de_vie;interet;date"];
+    for (let c of contacts) {
+        lignes.push([c.prenom, c.email, c.chemin, c.interet, c.date].join(";"));
+    }
+    let fichier = new Blob(["﻿" + lignes.join("\n")], { type: "text/csv;charset=utf-8" });
+    let lien = document.createElement("a");
+    lien.href = URL.createObjectURL(fichier);
+    lien.download = "contacts-helena-" + new Date().toISOString().slice(0, 10) + ".csv";
+    document.body.appendChild(lien);
+    lien.click();
+    lien.remove();
+    document.getElementById("msg-contacts").textContent = "Fichier téléchargé. Vérifie-le, puis efface les contacts de la tablette.";
+}
+
+let confirmationEffacement = false;
+
+function effacerContacts() {
+    if (!confirmationEffacement) {
+        confirmationEffacement = true;
+        document.getElementById("msg-contacts").textContent = "Appuie encore une fois sur « Effacer » pour confirmer.";
+        setTimeout(function () { confirmationEffacement = false; }, 5000);
+        return;
+    }
+    confirmationEffacement = false;
+    ecrire("hf-contacts", []);
+    afficherAdmin();
+    document.getElementById("msg-contacts").textContent = "Contacts effacés de la tablette.";
+}
+
+function enregistrerReglages() {
+    reglages.prixEbook = document.getElementById("r-prix-ebook").value.trim() || reglages.prixEbook;
+    reglages.prixFlash = document.getElementById("r-prix-flash").value.trim() || reglages.prixFlash;
+    reglages.creneaux = document.getElementById("r-creneaux").value.trim() || reglages.creneaux;
+    let nouveauCode = document.getElementById("r-code").value.trim();
+    if (nouveauCode !== "") {
+        if (nouveauCode.length < 4) {
+            document.getElementById("msg-reglages").textContent = "Le code doit faire au moins 4 chiffres.";
+            return;
+        }
+        reglages.code = nouveauCode;
+    }
+    ecrire("hf-reglages", reglages);
+    document.getElementById("r-code").value = "";
+    document.getElementById("msg-reglages").textContent = "Réglages enregistrés.";
+}
+
+
+// ==============================
+// AU DÉMARRAGE
+// ==============================
+remplirDates();
+relancerMinuteur();
+
+// Mémoire hors connexion (l'appli marche sans Internet après la première ouverture)
+if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
+    navigator.serviceWorker.register("sw.js");
+}

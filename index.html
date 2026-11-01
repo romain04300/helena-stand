@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hélèna Fuma</title>
+    <meta name="theme-color" content="#6B3FA0">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Hélèna Fuma">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="icon" href="icone-192.png">
+    <link rel="apple-touch-icon" href="icone-192.png">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@400;600;700&display=swap">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ========== PAGE 1 : ACCUEIL ========== -->
+<section id="accueil">
+    <img src="logo-rond.png" class="logo-tourne" id="logo" alt="Hélèna Fuma">
+    <h1>Découvre ce que ta date de naissance <em>dit de toi</em></h1>
+    <p>Ton histoire t'appartient. Ton avenir aussi.</p>
+    <button onclick="allerA('saisie')">Commencer</button>
+</section>
+
+<!-- ========== PAGE 2 : SAISIE ========== -->
+<section id="saisie" class="cachee">
+    <h1>Faisons <em>connaissance</em></h1>
+    <p class="etiquette">Ton prénom</p>
+    <input id="prenom" type="text" autocomplete="off">
+    <p class="etiquette">Ta date de naissance</p>
+    <div class="ligne">
+        <select id="jour"><option value="">Jour</option></select>
+        <select id="mois"><option value="">Mois</option></select>
+        <select id="annee"><option value="">Année</option></select>
+    </div>
+    <p id="erreur" class="erreur"></p>
+    <button onclick="valider()">Découvrir</button>
+    <button class="secondaire" onclick="recommencer()">Retour</button>
+</section>
+
+<!-- ========== PAGE 3 : RÉVÉLATION ========== -->
+<section id="revelation" class="cachee">
+    <h1 id="titre-revelation"></h1>
+    <div id="chiffre" class="chiffre"></div>
+    <p id="profil" class="profil"></p>
+    <p id="forces" class="forces"></p>
+    <button onclick="allerA('offres')">Ce n'est que le début…</button>
+</section>
+
+<!-- ========== PAGE 4 : LES OFFRES ========== -->
+<section id="offres" class="cachee">
+    <h1>Ce n'est que <em>le début</em></h1>
+    <div class="cartes">
+        <div class="carte barre-violet">
+            <p class="etiquette">Avec Hélèna, 20 minutes</p>
+            <h2>Numérologie flash</h2>
+            <p>Hélèna regarde ta date avec toi, ici, sur le stand.</p>
+            <p class="prix" id="prix-flash"></p>
+            <button onclick="ouvrirFlash()">Je m'inscris</button>
+        </div>
+        <div class="carte barre-corail">
+            <p class="etiquette">Offre du stand</p>
+            <h2 id="titre-ebook">Mon e-book Chemin de Vie</h2>
+            <p>Tous tes secrets : ta mission, tes forces, tes pièges, ton héritage familial.</p>
+            <p class="prix" id="prix-ebook"></p>
+            <button onclick="ouvrirContact()">Je le veux</button>
+        </div>
+        <div class="carte barre-turquoise">
+            <p class="etiquette">Aller plus loin</p>
+            <h2>Méthode Libération</h2>
+            <p>Séance Conscience : 2 h en visio avec Hélèna, numérologie et psychogénéalogie.</p>
+            <p class="petit">Demande sa carte à Hélèna ou appelle le 07 60 02 73 21.</p>
+        </div>
+    </div>
+    <button class="secondaire" onclick="recommencer()">Terminer</button>
+</section>
+
+<!-- ========== PAGE 5a : INSCRIPTION NUMÉROLOGIE FLASH ========== -->
+<section id="flash" class="cachee">
+    <h1>Numérologie <em>flash</em></h1>
+    <p class="etiquette">Ton prénom</p>
+    <input id="flash-prenom" type="text" autocomplete="off">
+    <p class="etiquette">Ton créneau</p>
+    <select id="flash-creneau"></select>
+    <p id="erreur-flash" class="erreur"></p>
+    <button onclick="inscrireFlash()">Je réserve</button>
+    <button class="secondaire" onclick="allerA('offres')">Retour</button>
+</section>
+
+<!-- ========== PAGE 5b : CONTACT E-BOOK ========== -->
+<section id="contact" class="cachee">
+    <h1>Ton e-book <em>par e-mail</em></h1>
+    <p class="etiquette">Ton prénom</p>
+    <input id="contact-prenom" type="text" autocomplete="off">
+    <p class="etiquette">Ton e-mail</p>
+    <input id="contact-email" type="email" autocomplete="off">
+    <label class="consentement">
+        <input id="consentement" type="checkbox">
+        J'accepte de recevoir l'e-book et des nouvelles d'Hélèna.
+    </label>
+    <p class="petit">Tes données servent uniquement à t'envoyer l'e-book et des nouvelles d'Hélèna.
+        Tu peux te désinscrire à tout moment en écrivant à contact@helenafuma-therapeute.fr.</p>
+    <p id="erreur-contact" class="erreur"></p>
+    <button onclick="enregistrerContact()">Envoyer</button>
+    <button class="secondaire" onclick="allerA('offres')">Retour</button>
+</section>
+
+<!-- ========== PAGE 6 : MERCI ========== -->
+<section id="merci" class="cachee">
+    <img src="logo-rond.png" class="logo-petit" alt="">
+    <h1 id="titre-merci">Merci !</h1>
+    <p id="texte-merci"></p>
+    <p class="petit">Ton histoire t'appartient. Ton avenir aussi.</p>
+    <button onclick="recommencer()">Terminer</button>
+</section>
+
+<!-- ========== ESPACE HÉLÈNA : CODE ========== -->
+<section id="code" class="cachee">
+    <h1>Espace <em>Hélèna</em></h1>
+    <p class="etiquette">Code</p>
+    <input id="code-saisi" type="password" inputmode="numeric" autocomplete="off">
+    <p id="erreur-code" class="erreur"></p>
+    <button onclick="verifierCode()">Entrer</button>
+    <button class="secondaire" onclick="recommencer()">Retour</button>
+</section>
+
+<!-- ========== ESPACE HÉLÈNA : GESTION ========== -->
+<section id="admin" class="cachee">
+    <h1>Espace <em>Hélèna</em></h1>
+
+    <div class="carte large">
+        <h2>Liste d'attente flash</h2>
+        <div id="liste-flash"></div>
+        <button class="secondaire" onclick="viderFlash()">Vider la liste</button>
+    </div>
+
+    <div class="carte large">
+        <h2>Contacts e-book</h2>
+        <p id="nb-contacts"></p>
+        <button onclick="exporterContacts()">Exporter (fichier CSV)</button>
+        <button class="secondaire" onclick="effacerContacts()">Effacer les contacts</button>
+        <p id="msg-contacts" class="petit"></p>
+    </div>
+
+    <div class="carte large">
+        <h2>Réglages du salon</h2>
+        <p class="etiquette">Prix e-book (€)</p>
+        <input id="r-prix-ebook" type="text" inputmode="decimal">
+        <p class="etiquette">Prix numérologie flash (€)</p>
+        <input id="r-prix-flash" type="text" inputmode="decimal">
+        <p class="etiquette">Créneaux flash (séparés par des virgules)</p>
+        <input id="r-creneaux" type="text">
+        <p class="etiquette">Nouveau code (4 chiffres ou plus)</p>
+        <input id="r-code" type="text" inputmode="numeric">
+        <button onclick="enregistrerReglages()">Enregistrer les réglages</button>
+        <p id="msg-reglages" class="petit"></p>
+    </div>
+
+    <button onclick="recommencer()">Quitter l'espace Hélèna</button>
+</section>
+
+<script src="app.js"></script>
+</body>
+</html>

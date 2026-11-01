@@ -1,0 +1,207 @@
+/* ==============================
+   COULEURS D'HÉLÈNA (charte)
+   ============================== */
+:root {
+    --violet: #6B3FA0;
+    --turquoise: #2EC4B6;
+    --corail: #E8637A;
+    --or: #C9A227;
+    --creme: #FAF6F0;
+    --nuit: #241B3D;
+    --bordure: #D6C7EA;
+    --fond-saisie: #F6F1FB;
+    --texte-secondaire: #8A7CA3;
+}
+
+/* ==============================
+   LA PAGE
+   ============================== */
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background-color: var(--creme);
+    color: var(--nuit);
+    font-family: "Montserrat", sans-serif;
+    font-size: 22px;
+    text-align: center;
+    /* les branchages dans les coins */
+    background-image: url("branchage.png"), url("branchage.png");
+    background-repeat: no-repeat;
+    background-size: 220px, 220px;
+    background-position: left bottom, right top;
+}
+
+section {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 24px 60px;
+}
+
+.cachee { display: none; }
+
+/* ==============================
+   LES TEXTES
+   ============================== */
+h1 {
+    color: var(--violet);
+    font-family: "Libre Baskerville", serif;
+    font-weight: 400;
+    font-size: 40px;
+    line-height: 1.3;
+}
+
+h1 em, h2 em { color: var(--or); }
+
+h2 {
+    color: var(--violet);
+    font-family: "Libre Baskerville", serif;
+    font-weight: 400;
+    font-size: 28px;
+    margin: 8px 0;
+}
+
+.etiquette {
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    font-size: 16px;
+    color: var(--texte-secondaire);
+    margin: 24px 0 6px;
+}
+
+.petit { font-size: 18px; color: var(--texte-secondaire); }
+
+.erreur { color: var(--corail); font-weight: 700; min-height: 28px; }
+
+/* ==============================
+   LES BOUTONS (au moins 60 px de haut)
+   ============================== */
+button {
+    font-family: "Montserrat", sans-serif;
+    font-weight: 700;
+    font-size: 24px;
+    min-height: 64px;
+    padding: 16px 48px;
+    margin: 12px 8px;
+    background-color: var(--violet);
+    color: white;
+    border: none;
+    border-radius: 40px;
+    cursor: pointer;
+}
+
+button.secondaire {
+    background-color: transparent;
+    color: var(--violet);
+    border: 2px solid var(--bordure);
+}
+
+/* ==============================
+   LES CASES À REMPLIR
+   ============================== */
+input[type="text"], input[type="email"], input[type="password"], select {
+    font-family: "Montserrat", sans-serif;
+    font-size: 24px;
+    min-height: 60px;
+    padding: 12px 16px;
+    margin: 6px;
+    width: 100%;
+    max-width: 520px;
+    border: 2px solid var(--bordure);
+    border-radius: 8px;
+    background-color: var(--fond-saisie);
+    color: var(--nuit);
+}
+
+.ligne { display: flex; gap: 8px; justify-content: center; max-width: 560px; margin: 0 auto; }
+.ligne select { flex: 1; min-width: 0; }
+
+.consentement {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    max-width: 560px;
+    margin: 24px auto 8px;
+    text-align: left;
+    font-size: 20px;
+}
+.consentement input { width: 32px; height: 32px; flex: none; accent-color: var(--violet); }
+
+/* ==============================
+   LE LOGO
+   ============================== */
+.logo-tourne {
+    width: 240px;
+    animation: tourner 8s ease-in-out infinite;
+}
+
+@keyframes tourner {
+    from { transform: perspective(800px) rotateY(0deg); }
+    to   { transform: perspective(800px) rotateY(360deg); }
+}
+
+.logo-petit { width: 120px; }
+
+/* ==============================
+   LA RÉVÉLATION
+   ============================== */
+.chiffre {
+    font-family: "Libre Baskerville", serif;
+    font-size: 110px;
+    color: white;
+    background-color: var(--violet);
+    width: 220px;
+    height: 220px;
+    line-height: 220px;
+    border-radius: 50%;
+    border: 6px solid var(--or);
+    margin: 10px auto 20px;
+}
+
+.profil {
+    font-family: "Libre Baskerville", serif;
+    font-style: italic;
+    font-size: 34px;
+    color: var(--violet);
+    margin: 8px 0;
+}
+
+.forces { font-size: 24px; font-weight: 600; }
+
+/* ==============================
+   LES CARTES D'OFFRES
+   ============================== */
+.cartes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.carte {
+    background: white;
+    border: 2px solid var(--bordure);
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.carte p { font-size: 19px; }
+.carte button { padding: 14px 24px; font-size: 21px; }
+.carte.large { margin: 20px auto; max-width: 640px; }
+
+.barre-violet    { border-top: 8px solid var(--violet); }
+.barre-corail    { border-top: 8px solid var(--corail); }
+.barre-turquoise { border-top: 8px solid var(--turquoise); }
+
+.prix { font-family: "Libre Baskerville", serif; font-size: 30px !important; color: var(--corail); margin: 6px 0; }
+
+.ligne-attente { border-bottom: 1px dashed var(--bordure); padding: 8px 0; font-size: 20px; }
+
+@media (prefers-reduced-motion: reduce) {
+    .logo-tourne { animation: none; }
+}
