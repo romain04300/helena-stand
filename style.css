@@ -238,3 +238,22 @@ body { padding-bottom: 96px; }
     font-weight: 600;
     color: var(--violet);
 }
+
+/* ==============================
+   TÉLÉPHONE (écran étroit)
+   ============================== */
+@media (max-width: 520px) {
+    body { font-size: 19px; background-size: 120px, 120px; padding-bottom: 84px; }
+    section { padding: 24px 16px 40px; }
+    h1 { font-size: 30px; }
+    h2 { font-size: 24px; }
+    .logo-tourne { width: 190px; }
+    .ligne { gap: 6px; }
+    .ligne select { font-size: 18px; padding: 10px 6px; margin: 0; }
+    button { font-size: 21px; padding: 14px 32px; }
+    .chiffre { width: 170px; height: 170px; line-height: 170px; font-size: 84px; }
+    .profil { font-size: 28px; }
+    .pied { padding: 8px 12px 10px; }
+    .pied-nom { font-size: 18px; }
+    .pied-metier { font-size: 10px; letter-spacing: 0.03em; }
+}
