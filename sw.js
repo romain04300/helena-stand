@@ -1,9 +1,9 @@
 // Mémoire hors connexion de l'appli Hélèna Fuma
-const CACHE = "helena-stand-v5";
+const CACHE = "helena-stand-v6";
 const FICHIERS = [
   "./", "./index.html", "./style.css", "./app.js", "./manifest.webmanifest",
-  "./logo-rond.png", "./branchage.png",
-  "./icone-192.png", "./icone-512.png"
+  "./images/logo-rond.png", "./images/branchage2.png",
+  "./images/icone-192.png", "./images/icone-512.png"
 ];
 
 self.addEventListener("install", e => {

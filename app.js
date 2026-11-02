@@ -12,19 +12,20 @@ const reglagesParDefaut = {
 const maitres = [11, 22, 33, 44];
 
 const forces = {
-    1: "le Leader : Autonomie, Leadership, Commencement",
-    2: "le Diplomate : Alliance, Diplomatie, Sensibilité",
-    3: "l'Artiste : Créativité, Expression, Joie",
-    4: "le Bâtisseur : Structure, Rigueur, Fiabilité",
-    5: "l'Aventurier : Liberté, Mouvement, Curiosité",
-    6: "le Protecteur : Amour, Responsabilité, Harmonie",
-    7: "le Chercheur : Introspection, Vérité, Mystère",
-    8: "le Stratège : Pouvoir, Abondance, Autorité",
-    9: "l'Humaniste : Compassion, Universel, Don de soi",
-    11: "l'Éveilleur : Intuition, Sensibilité, Vision",
-    22: "l'Architecte : Vision, Construction, Ambition",
-    33: "le Guérisseur : Amour, Guérison, Transmission",
-    44: "le Réformateur : Vision, Détachement, Décalage",
+    // "le nom : force 1, force 2 : frein"
+    1: "le Leader : Audace, Leadership : Impatience",
+    2: "le Diplomate : Écoute, Diplomatie : Effacement",
+    3: "l'Artiste : Créativité, Joie : Dispersion",
+    4: "le Bâtisseur : Fiabilité, Persévérance : Rigidité",
+    5: "l'Aventurier : Liberté, Curiosité : Instabilité",
+    6: "le Protecteur : Bienveillance, Harmonie : Sacrifice",
+    7: "le Chercheur : Profondeur, Sagesse : Isolement",
+    8: "le Stratège : Puissance, Réussite : Contrôle",
+    9: "l'Humaniste : Générosité, Humanisme : Désillusion",
+    11: "l'Éveilleur : Intuition, Inspiration : Dépendance",
+    22: "l'Architecte : Solidité, Accomplissement : Intransigeance",
+    33: "le Guérisseur : Compassion, Rayonnement : Hypercontrôle",
+    44: "le Réformateur : Maîtrise, Endurance : Marginalité",
 };
 
 const DELAI_INACTIVITE = 60;   // secondes avant le retour automatique à l'accueil
@@ -200,12 +201,13 @@ function valider() {
     compter("calculs");
     compterChemin(total);
     compterPersonne(prenom, jour, mois, annee);
-    let morceaux = forces[total].split(" : ");   // "le Leader" | "Autonomie, Leadership, Commencement"
+    let morceaux = forces[total].split(" : ");   // "le Leader" | "Audace, Leadership" | "Impatience"
 
     document.getElementById("titre-revelation").textContent = prenom + ", ton chemin de vie est";
     document.getElementById("chiffre").textContent = total;
     document.getElementById("profil").textContent = morceaux[0];
-    document.getElementById("forces").textContent = morceaux[1];
+    document.getElementById("forces").textContent = "Tes forces : " + morceaux[1];
+    document.getElementById("frein").textContent = "Ton frein : " + morceaux[2];
 
     // on prépare la page des offres
     document.getElementById("titre-ebook").textContent = "Mon e-book Chemin de Vie " + total;

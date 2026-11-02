@@ -27,9 +27,9 @@ body {
     font-size: 22px;
     text-align: center;
     /* les branchages dans les coins */
-    background-image: url("branchage.png"), url("branchage.png");
+    background-image: url("images/branchage2.jpeg"), url("images/branchage2.jpeg");
     background-repeat: no-repeat;
-    background-size: 220px, 220px;
+    background-size: 220px auto, 220px auto;
     background-position: left bottom, right top;
 }
 
@@ -168,7 +168,8 @@ input[type="text"], input[type="email"], input[type="password"], select {
     margin: 8px 0;
 }
 
-.forces { font-size: 24px; font-weight: 600; }
+.forces { font-size: 24px; font-weight: 600; margin-bottom: 6px; }
+.frein  { font-size: 21px; font-style: italic; color: var(--corail); margin-top: 0; }
 
 /* ==============================
    LES CARTES D'OFFRES
@@ -243,7 +244,7 @@ body { padding-bottom: 96px; }
    TÉLÉPHONE (écran étroit)
    ============================== */
 @media (max-width: 520px) {
-    body { font-size: 19px; background-size: 120px, 120px; padding-bottom: 84px; }
+    body { font-size: 19px; background-size: 120px auto, 120px auto; padding-bottom: 84px; }
     section { padding: 24px 16px 40px; }
     h1 { font-size: 30px; }
     h2 { font-size: 24px; }
