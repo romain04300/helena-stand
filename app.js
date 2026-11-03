@@ -29,6 +29,7 @@ const forces = {
 };
 
 const DELAI_INACTIVITE = 60;   // secondes avant le retour automatique à l'accueil
+const LIEN_SUMUP = "https://helena-fuma-numerologie-karmique-et-psychogenealogie.sumupstore.com/";
 
 
 // ==============================
@@ -210,8 +211,7 @@ function valider() {
     document.getElementById("frein").textContent = "Ton frein : " + morceaux[2];
 
     // on prépare la page des offres
-    document.getElementById("titre-ebook").textContent = "Mon e-book Chemin de Vie " + total;
-    document.getElementById("prix-ebook").textContent = "Prix salon : " + reglages.prixEbook + " €";
+    document.getElementById("titre-ebook").textContent = "ton e-book Chemin de Vie " + total;
     document.getElementById("prix-flash").textContent = reglages.prixFlash + " €";
     document.getElementById("flash-prenom").value = prenom;
     document.getElementById("contact-prenom").value = prenom;
@@ -254,9 +254,15 @@ function ouvrirFlash() {
 
 function inscrireFlash() {
     let prenom = document.getElementById("flash-prenom").value.trim();
+    let tel = document.getElementById("flash-tel").value;          // NOUVEAU
+    tel = tel.replaceAll(" ", "").replaceAll(".", "");              // NOUVEAU
     let creneau = document.getElementById("flash-creneau").value;
     if (prenom === "" || creneau === "") {
         document.getElementById("erreur-flash").textContent = "Il manque ton prénom ou ton créneau.";
+        return;
+    }
+    if (tel.length !== 10 || isNaN(tel)) {                          // NOUVEAU
+        document.getElementById("erreur-flash").textContent = "Ton numéro doit faire 10 chiffres (ex. 06 12 34 56 78).";
         return;
     }
     if (creneauxPris().includes(creneau)) {
@@ -265,7 +271,7 @@ function inscrireFlash() {
         return;
     }
     let liste = lire("hf-flash", []);
-    liste.push({ prenom: prenom, creneau: creneau, chemin: cheminActuel });
+    liste.push({ prenom: prenom, tel: tel, creneau: creneau, chemin: cheminActuel });   // tel AJOUTÉ
     ecrire("hf-flash", liste);
     compter("flash");
 
@@ -273,7 +279,18 @@ function inscrireFlash() {
     document.getElementById("texte-merci").textContent = "Hélèna t'attend à " + creneau + " pour ta numérologie flash.";
     allerA("merci");
 }
+// ==============================
+// COMMANDE : E-BOOK ET LIVRET (SUMUP)
+// ==============================
+function commander(produit) {
+    document.getElementById("texte-commande").textContent =
+        "Sur la boutique, choisis : " + produit + " Chemin de Vie " + cheminActuel;
+    allerA("commande");
+}
 
+function payerSurTablette() {
+    window.open(LIEN_SUMUP, "_blank");
+}
 
 // ==============================
 // E-BOOK : CONTACT AVEC CONSENTEMENT
@@ -394,8 +411,12 @@ function afficherStats() {
 }
 
 let confirmationStats = false;
-
-function remettreStatsAZero() {
+function exporterStatsPDF() {
+    let ancienTitre = document.title;
+    document.title = "Stats salon Helena " + new Date().toISOString().slice(0, 10);
+    window.print();
+    document.title = ancienTitre;
+}function remettreStatsAZero() {
     if (!confirmationStats) {
         confirmationStats = true;
         document.getElementById("msg-stats").textContent = "Appuie encore une fois pour confirmer.";
@@ -423,7 +444,7 @@ function afficherAdmin() {
     for (let personne of liste) {
         let ligne = document.createElement("p");
         ligne.className = "ligne-attente";
-        ligne.textContent = personne.creneau + " · " + personne.prenom + " (chemin de vie " + (personne.chemin || "?") + ")";
+        ligne.textContent = personne.creneau + " · " + personne.prenom + " · " + (personne.tel || "pas de numéro") + " (chemin de vie " + (personne.chemin || "?") + ")";
         zone.appendChild(ligne);
     }
 

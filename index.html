@@ -62,12 +62,20 @@
             <p class="prix" id="prix-flash"></p>
             <button onclick="ouvrirFlash()">Je m'inscris</button>
         </div>
-        <div class="carte barre-corail">
+        <div class="carte barre-or">
+            <span class="badge">coup de &#9825;</span>
             <p class="etiquette">Offre du stand</p>
-            <h2 id="titre-ebook">Mon e-book Chemin de Vie</h2>
+            <h2>Ton livret</h2>
+            <p>Ton chemin de vie expliqué en détail, imprimé, à emporter.</p>
+            <p class="prix">25€ <s>32€</s></p>
+            <button onclick="commander('Livret')">Je le veux</button>
+        </div>
+                <div class="carte barre-corail">
+            <p class="etiquette">Version numérique</p>
+            <h2 id="titre-ebook">Ton e-book</h2>
             <p>Tous tes secrets : ta mission, tes forces, tes pièges, ton héritage familial.</p>
-            <p class="prix" id="prix-ebook"></p>
-            <button onclick="ouvrirContact()">Je le veux</button>
+            <p class="prix">15 € <s>19 €</s></p>
+            <button onclick="commander('E-book')">Je le veux</button>
         </div>
         <div class="carte barre-turquoise">
             <p class="etiquette">Aller plus loin</p>
@@ -84,6 +92,8 @@
     <h1>Numérologie <em>flash</em></h1>
     <p class="etiquette">Ton prénom</p>
     <input id="flash-prenom" type="text" autocomplete="off">
+        <p class="etiquette">Ton téléphone</p>
+    <input id="flash-tel" type="tel" inputmode="tel" autocomplete="off" placeholder="06 12 34 56 78">
     <p class="etiquette">Ton créneau</p>
     <select id="flash-creneau"></select>
     <p id="plus-de-creneau" class="petit cachee">Tous les créneaux sont pris pour aujourd'hui. Demande directement à Hélèna !</p>
@@ -109,7 +119,15 @@
     <button onclick="enregistrerContact()">Envoyer</button>
     <button class="secondaire" onclick="allerA('offres')">Retour</button>
 </section>
-
+<!-- ========== PAGE 5c : COMMANDE SUMUP ========== -->
+<section id="commande" class="cachee">
+    <h1>Ta <em>commande</em></h1>
+    <p id="texte-commande"></p>
+    <img src="images/qr-sumup.png" class="qr" alt="QR code de la boutique d'Hélèna">
+    <p class="petit">Scanne-moi avec l'appareil photo de ton téléphone pour payer.</p>
+    <button onclick="payerSurTablette()">Payer sur la tablette</button>
+    <button class="secondaire" onclick="allerA('offres')">Retour</button>
+</section>
 <!-- ========== PAGE 6 : MERCI ========== -->
 <section id="merci" class="cachee">
     <img src="images/logo-rond.png" class="logo-petit" alt="">
@@ -133,10 +151,11 @@
 <section id="admin" class="cachee">
     <h1>Espace <em>Hélèna</em></h1>
 
-    <div class="carte large">
+    <div class="carte large a-imprimer">
         <h2>Fréquentation</h2>
         <p id="stats-depuis" class="petit"></p>
         <div id="stats"></div>
+        <button onclick="exporterStatsPDF()">Exporter en PDF</button>
         <button class="secondaire" onclick="remettreStatsAZero()">Remettre à zéro</button>
         <p id="msg-stats" class="petit"></p>
     </div>
