@@ -282,10 +282,45 @@ function inscrireFlash() {
 // ==============================
 // COMMANDE : E-BOOK ET LIVRET (SUMUP)
 // ==============================
+let produitActuel = "";
+
 function commander(produit) {
+    produitActuel = produit;
     document.getElementById("texte-commande").textContent =
-        "Sur la boutique, choisis : " + produit + " Chemin de Vie " + cheminActuel;
+        "Ton " + produit + " Chemin de Vie " + cheminActuel;
+    document.getElementById("commande-prenom").value = document.getElementById("prenom").value;
+    document.getElementById("erreur-commande").textContent = "";
+    document.getElementById("zone-coordonnees").classList.remove("cachee");
+    document.getElementById("zone-paiement").classList.add("cachee");
     allerA("commande");
+}
+
+function validerCommande() {
+    let prenom = document.getElementById("commande-prenom").value.trim();
+    let email = document.getElementById("commande-email").value.trim();
+    let erreur = document.getElementById("erreur-commande");
+
+    if (prenom === "") { erreur.textContent = "Il manque ton prénom."; return; }
+    if (!email.includes("@") || !email.includes(".")) { erreur.textContent = "Ton e-mail n'a pas l'air complet."; return; }
+
+    let commandes = lire("hf-commandes", []);
+    commandes.push({
+        heure: new Date().toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }),
+        date: new Date().toLocaleDateString("fr-FR"),
+        prenom: prenom,
+        email: email,
+        produit: produitActuel,
+        chemin: cheminActuel,
+                payee: false,
+    });
+    ecrire("hf-commandes", commandes);
+
+    erreur.textContent = "";
+    document.getElementById("texte-commande").textContent =
+        "Merci " + prenom + " ! Tu peux payer ton " + produitActuel + " ici :";
+    document.getElementById("zone-coordonnees").classList.add("cachee");
+    document.getElementById("zone-paiement").classList.remove("cachee");
+
 }
 
 function payerSurTablette() {
@@ -382,7 +417,8 @@ function afficherStats() {
         ["Chemins de vie calculés", stats.calculs || 0],
         ["Ont regardé les offres", stats.offres || 0],
         ["Inscriptions numérologie flash", stats.flash || 0],
-        ["Demandes d'e-book", stats.ebook || 0],
+        ["Commandes payées (livret / e-book)", stats.commandes || 0],
+        ["Inscriptions aux nouvelles", stats.ebook || 0],
     ];
     let zone = document.getElementById("stats");
     zone.innerHTML = "";
@@ -447,7 +483,33 @@ function afficherAdmin() {
         ligne.textContent = personne.creneau + " · " + personne.prenom + " · " + (personne.tel || "pas de numéro") + " (chemin de vie " + (personne.chemin || "?") + ")";
         zone.appendChild(ligne);
     }
+    // commandes livret / e-book
+    let commandes = lire("hf-commandes", []);
+    let zoneCommandes = document.getElementById("liste-commandes");
+    zoneCommandes.innerHTML = "";
+    if (commandes.length === 0) {
+        zoneCommandes.innerHTML = '<p class="petit">Aucune commande.</p>';
+    }
+       for (let i = 0; i < commandes.length; i++) {
+        let c = commandes[i];
+        let ligne = document.createElement("p");
+        ligne.className = "ligne-attente";
+        ligne.textContent = c.heure + " · " + c.prenom + " · " + c.produit + " Chemin de Vie " + c.chemin + " · " + c.email + " ";
 
+        let boutonPayee = document.createElement("button");
+        boutonPayee.className = c.payee ? "mini payee" : "mini";
+        boutonPayee.textContent = c.payee ? "✓ Payée" : "Marquer payée";
+        boutonPayee.onclick = function () { marquerPayee(i); };
+        ligne.appendChild(boutonPayee);
+
+        let boutonSuppr = document.createElement("button");
+        boutonSuppr.className = "mini secondaire";
+        boutonSuppr.textContent = "Supprimer";
+        boutonSuppr.onclick = function () { supprimerCommande(i); };
+        ligne.appendChild(boutonSuppr);
+
+        zoneCommandes.appendChild(ligne);
+    }
     // contacts
     let contacts = lire("hf-contacts", []);
     document.getElementById("nb-contacts").textContent = contacts.length + " contact(s) enregistré(s) sur cette tablette.";
@@ -466,6 +528,37 @@ function viderFlash() {
     afficherAdmin();
 }
 
+function viderCommandes() {
+    ecrire("hf-commandes", []);
+    afficherAdmin();
+}
+
+function marquerPayee(i) {
+    let commandes = lire("hf-commandes", []);
+    commandes[i].payee = !commandes[i].payee;
+    ecrire("hf-commandes", commandes);
+
+    let stats = lire("hf-stats", {});
+    if (commandes[i].payee) {
+        stats.commandes = (stats.commandes || 0) + 1;
+    } else {
+        stats.commandes = (stats.commandes || 0) - 1;
+    }
+    ecrire("hf-stats", stats);
+    afficherAdmin();
+}
+
+function supprimerCommande(i) {
+    let commandes = lire("hf-commandes", []);
+    if (commandes[i].payee) {
+        let stats = lire("hf-stats", {});
+        stats.commandes = (stats.commandes || 0) - 1;
+        ecrire("hf-stats", stats);
+    }
+    commandes.splice(i, 1);
+    ecrire("hf-commandes", commandes);
+    afficherAdmin();
+}
 function exporterContacts() {
     let contacts = lire("hf-contacts", []);
     if (contacts.length === 0) {

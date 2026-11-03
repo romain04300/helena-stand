@@ -339,3 +339,6 @@ body { padding-bottom: 96px; }
     margin: 10px auto;
     display: block;
 }
+/* petits boutons dans les listes de l'espace Hélèna */
+button.mini { font-size: 16px; min-height: 40px; padding: 6px 14px; margin: 4px; }
+button.mini.payee { background-color: var(--turquoise); }

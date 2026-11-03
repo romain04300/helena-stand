@@ -84,6 +84,8 @@
             <p class="petit">Demande sa carte à Hélèna ou appelle le 07 60 02 73 21.</p>
         </div>
     </div>
+
+    <button class="secondaire" onclick="ouvrirContact()">Recevoir des nouvelles d'Hélèna</button>
     <button class="secondaire" onclick="recommencer()">Terminer</button>
 </section>
 
@@ -104,28 +106,42 @@
 
 <!-- ========== PAGE 5b : CONTACT E-BOOK ========== -->
 <section id="contact" class="cachee">
-    <h1>Ton e-book <em>par e-mail</em></h1>
+    <h1>Reste en <em>contact</em></h1>
+    <p>Reçois les conseils, les dates de salons et les nouveautés d'Hélèna.</p>
     <p class="etiquette">Ton prénom</p>
     <input id="contact-prenom" type="text" autocomplete="off">
     <p class="etiquette">Ton e-mail</p>
     <input id="contact-email" type="email" autocomplete="off">
     <label class="consentement">
         <input id="consentement" type="checkbox">
-        J'accepte de recevoir l'e-book et des nouvelles d'Hélèna.
+        J'accepte de recevoir des nouvelles d'Hélèna par e-mail.
     </label>
-    <p class="petit">Tes données servent uniquement à t'envoyer l'e-book et des nouvelles d'Hélèna.
+    <p class="petit">Tes données servent uniquement à t'envoyer des nouvelles d'Hélèna.
         Tu peux te désinscrire à tout moment en écrivant à contact@helenafuma-therapeute.fr.</p>
     <p id="erreur-contact" class="erreur"></p>
-    <button onclick="enregistrerContact()">Envoyer</button>
+    <button onclick="enregistrerContact()">Je m'inscris</button>
     <button class="secondaire" onclick="allerA('offres')">Retour</button>
 </section>
 <!-- ========== PAGE 5c : COMMANDE SUMUP ========== -->
 <section id="commande" class="cachee">
     <h1>Ta <em>commande</em></h1>
     <p id="texte-commande"></p>
-    <img src="images/qr-sumup.png" class="qr" alt="QR code de la boutique d'Hélèna">
-    <p class="petit">Scanne-moi avec l'appareil photo de ton téléphone pour payer.</p>
-    <button onclick="payerSurTablette()">Payer sur la tablette</button>
+
+    <div id="zone-coordonnees">
+        <p class="etiquette">Ton prénom</p>
+        <input id="commande-prenom" type="text" autocomplete="off">
+        <p class="etiquette">Ton e-mail</p>
+        <input id="commande-email" type="email" autocomplete="off">
+        <p id="erreur-commande" class="erreur"></p>
+        <button onclick="validerCommande()">Je valide ma commande</button>
+    </div>
+
+    <div id="zone-paiement" class="cachee">
+        <img src="images/qr-sumup.png" class="qr" alt="QR code de la boutique d'Hélèna">
+        <p class="petit">Scanne-moi avec l'appareil photo de ton téléphone pour payer.</p>
+        <button onclick="payerSurTablette()">Payer sur la tablette</button>
+    </div>
+
     <button class="secondaire" onclick="allerA('offres')">Retour</button>
 </section>
 <!-- ========== PAGE 6 : MERCI ========== -->
@@ -164,6 +180,12 @@
         <h2>Liste d'attente flash</h2>
         <div id="liste-flash"></div>
         <button class="secondaire" onclick="viderFlash()">Vider la liste</button>
+    </div>
+
+    <div class="carte large">
+        <h2>Commandes livret / e-book</h2>
+        <div id="liste-commandes"></div>
+        <button class="secondaire" onclick="viderCommandes()">Vider la liste</button>
     </div>
 
     <div class="carte large">
