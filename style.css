@@ -26,13 +26,33 @@ body {
     font-family: "Montserrat", sans-serif;
     font-size: 22px;
     text-align: center;
-    /* les branchages dans les coins */
-    background-image: url("images/branchage2.jpeg"), url("images/branchage2.jpeg");
+
+}
+body::before,
+body::after {
+    content: "";
+    position: fixed;
+    width: 380px;
+    height: 278px;
+    background-image: url("images/branchage2_5.png");
     background-repeat: no-repeat;
-    background-size: 220px auto, 220px auto;
-    background-position: left bottom, right top;
+    background-size: contain;
+    pointer-events: none;
+    z-index: -1;
+}
+/* en haut à droite */
+body::before {
+    top: -50px;
+    right: -100px;
+    transform: rotate(5deg);
 }
 
+/* en bas à gauche : la même à l'envers (5 + 180 = 185) */
+body::after {
+    bottom: 1px;
+    left: -30px;
+    transform: rotate(185deg);
+}
 section {
     max-width: 900px;
     margin: 0 auto;
@@ -169,7 +189,7 @@ input[type="text"], input[type="email"], input[type="password"], select {
 }
 
 .forces { font-size: 24px; font-weight: 600; margin-bottom: 6px; }
-.frein  { font-size: 21px; font-style: italic; color: var(--corail); margin-top: 0; }
+.frein  { font-size: 21px; font-style: italic; color:#C9A227 ; margin-top: 0; }
 
 /* ==============================
    LES CARTES D'OFFRES
@@ -244,7 +264,10 @@ body { padding-bottom: 96px; }
    TÉLÉPHONE (écran étroit)
    ============================== */
 @media (max-width: 520px) {
-    body { font-size: 19px; background-size: 120px auto, 120px auto; padding-bottom: 84px; }
+    body { font-size: 19px; padding-bottom: 84px; }
+    body::before, body::after { width: 220px; height: 161px; }
+    body::before { top: -30px; right: -60px; }
+    body::after { bottom: 45px; left: -60px; }
     section { padding: 24px 16px 40px; }
     h1 { font-size: 30px; }
     h2 { font-size: 24px; }
