@@ -398,3 +398,7 @@ button.mini.payee { background-color: var(--turquoise); }
 .champ input { max-width: none; margin: 6px 0; }
 .petit-champ { flex: 0 0 34%; }
 #zone-coordonnees .ligne { max-width: 520px; gap: 10px; }
+
+/* le thème choisi dans les Enquêtes de l'Âme */
+.choix button.choisi { background-color: var(--or); }
+#format-enquete { margin-top: 10px; }

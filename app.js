@@ -28,7 +28,13 @@ const forces = {
 };
 
 const DELAI_INACTIVITE = 60;   // secondes avant le retour automatique à l'accueil
-const LIEN_SUMUP = "https://helena-fuma-numerologie-karmique-et-psychogenealogie.sumupstore.com/";
+// les 4 liens de paiement SumUp d'Hélèna (offre salon) et leur QR code
+const LIENS_SUMUP = {
+    "livret-cdv":     { lien: "https://pay.sumup.com/b2c/QSIEB4FB", qr: "images/qr-livret-cdv.png" },      // Livret chemin de vie 25 €
+    "ebook-cdv":      { lien: "https://pay.sumup.com/b2c/QY2BIHU0", qr: "images/qr-ebook-cdv.png" },       // E-book chemin de vie 15 €
+    "livret-enquete": { lien: "https://pay.sumup.com/b2c/QWC55TUB", qr: "images/qr-livret-enquete.png" },  // Livret Enquêtes de l'Âme 25 €
+    "ebook-enquete":  { lien: "https://pay.sumup.com/b2c/QPE5WXYV", qr: "images/qr-ebook-enquete.png" },   // E-book Enquêtes de l'Âme 15 €
+};
 
 
 // ==============================
@@ -284,9 +290,13 @@ function inscrireFlash() {
 // COMMANDE : E-BOOK ET LIVRET (SUMUP)
 // ==============================
 let produitActuel = "";
+let paiementActuel = "livret-cdv";
+let themeChoisi = "";
 
-function commander(produit) {
+function commander(produit, cle) {
     produitActuel = produit;
+    paiementActuel = cle;
+    document.getElementById("qr-paiement").src = LIENS_SUMUP[cle].qr;
     document.getElementById("texte-commande").textContent =
         "Ton " + produit + " Chemin de Vie " + cheminActuel;
     document.getElementById("commande-prenom").value = document.getElementById("prenom").value;
@@ -294,6 +304,31 @@ function commander(produit) {
     document.getElementById("zone-coordonnees").classList.remove("cachee");
     document.getElementById("zone-paiement").classList.add("cachee");
     allerA("commande");
+}
+
+// ENQUÊTES DE L'ÂME : d'abord le thème, puis e-book ou livret
+function ouvrirEnquetes() {
+    themeChoisi = "";
+    for (let bouton of document.querySelectorAll("#enquetes .choix button")) {
+        bouton.classList.remove("choisi");
+    }
+    document.getElementById("format-enquete").classList.add("cachee");
+    allerA("enquetes");
+}
+
+function choisirTheme(theme, bouton) {
+    themeChoisi = theme;
+    for (let b of document.querySelectorAll("#enquetes .choix button")) {
+        b.classList.remove("choisi");
+    }
+    bouton.classList.add("choisi");
+    document.getElementById("titre-format").textContent = "Enquête de l'Âme : " + theme + " — choisis ton format";
+    document.getElementById("format-enquete").classList.remove("cachee");
+}
+
+function commanderEnquete(format, cle) {
+    commander(format + " Enquête de l'Âme : " + themeChoisi, cle);
+    document.getElementById("texte-commande").textContent = "Ton " + format + " Enquête de l'Âme : " + themeChoisi;
 }
 
 function validerCommande() {
@@ -336,13 +371,8 @@ function validerCommande() {
     document.getElementById("zone-paiement").classList.remove("cachee");
 }
 
-function commanderEnquete(theme) {
-    commander("Enquête de l'Âme : " + theme);
-    document.getElementById("texte-commande").textContent = "Ton Enquête de l'Âme : " + theme;
-}
-
 function payerSurTablette() {
-    window.open(LIEN_SUMUP, "_blank");
+    window.open(LIENS_SUMUP[paiementActuel].lien, "_blank");
 }
 
 
@@ -517,7 +547,7 @@ function afficherAdmin() {
         let c = commandes[i];
         let ligne = document.createElement("p");
         ligne.className = "ligne-attente";
-        let detail = c.produit.startsWith("Enquête") ? c.produit : c.produit + " Chemin de Vie " + c.chemin;
+        let detail = c.produit.includes("Enquête") ? c.produit : c.produit + " Chemin de Vie " + c.chemin;
         let qui = c.prenom + (c.nom ? " " + c.nom : "");
         let adresse = c.adresse ? " · " + c.adresse + ", " + c.cp + " " + c.ville : "";
         let tel = c.tel ? " · " + c.tel : "";

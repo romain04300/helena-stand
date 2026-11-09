@@ -68,14 +68,14 @@
             <h2>Ton livret</h2>
             <p>Ton chemin de vie expliqué en détail, imprimé, à emporter.</p>
             <p class="prix">25 € <s>32 €</s></p>
-            <button onclick="commander('Livret')">Je le veux</button>
+            <button onclick="commander('Livret', 'livret-cdv')">Je le veux</button>
         </div>
         <div class="carte barre-corail">
             <p class="etiquette">Version numérique</p>
             <h2 id="titre-ebook">Ton e-book</h2>
             <p>Tous tes secrets : ta mission, tes forces, tes pièges, ton héritage familial.</p>
             <p class="prix">15 € <s>19 €</s></p>
-            <button onclick="commander('E-book')">Je le veux</button>
+            <button onclick="commander('E-book', 'ebook-cdv')">Je le veux</button>
         </div>
         <div class="carte barre-turquoise">
             <p class="etiquette">Aller plus loin</p>
@@ -87,7 +87,8 @@
             <p class="etiquette">La collection d'Hélèna</p>
             <h2>Les Enquêtes de l'Âme</h2>
             <p>Amour, travail, famille, argent, blessures et croyances, enfant intérieur : choisis la part de ta vie à éclairer.</p>
-            <button onclick="allerA('enquetes')">Je choisis mon enquête</button>
+            <p class="prix">E-book 15 € · Livret 25 €</p>
+            <button onclick="ouvrirEnquetes()">Je choisis mon enquête</button>
         </div>
     </div>
     <button class="secondaire" onclick="ouvrirContact()">Recevoir des nouvelles d'Hélèna</button>
@@ -133,14 +134,21 @@
     <h1>Les Enquêtes <em>de l'Âme</em></h1>
     <p>Quelle part de ta vie veux-tu éclairer ?</p>
     <div class="choix">
-        <button onclick="commanderEnquete('Amour')">Amour</button>
-        <button onclick="commanderEnquete('Travail')">Travail</button>
-        <button onclick="commanderEnquete('Famille')">Famille</button>
-        <button onclick="commanderEnquete('Argent')">Argent</button>
-        <button onclick="commanderEnquete('Blessures et croyances')">Blessures et croyances</button>
-        <button onclick="commanderEnquete('Enfant intérieur')">Enfant intérieur</button>
+        <button onclick="choisirTheme('Amour', this)">Amour</button>
+        <button onclick="choisirTheme('Travail', this)">Travail</button>
+        <button onclick="choisirTheme('Famille', this)">Famille</button>
+        <button onclick="choisirTheme('Argent', this)">Argent</button>
+        <button onclick="choisirTheme('Blessures et croyances', this)">Blessures et croyances</button>
+        <button onclick="choisirTheme('Enfant intérieur', this)">Enfant intérieur</button>
     </div>
-    <p class="petit">Prix sur la boutique d'Hélèna.</p>
+    <div id="format-enquete" class="cachee">
+        <p class="etiquette" id="titre-format"></p>
+        <div class="choix">
+            <button onclick="commanderEnquete('E-book', 'ebook-enquete')">E-book · 15 €</button>
+            <button onclick="commanderEnquete('Livret', 'livret-enquete')">Livret · 25 €</button>
+        </div>
+    </div>
+    <p class="petit">Offre salon.</p>
     <button class="secondaire" onclick="allerA('offres')">Retour</button>
 </section>
 
@@ -182,8 +190,9 @@
     </div>
 
     <div id="zone-paiement" class="cachee">
-        <img src="images/qr-sumup.png" class="qr" alt="QR code de la boutique d'Hélèna">
+        <img id="qr-paiement" src="images/qr-livret-cdv.png" class="qr" alt="QR code du paiement SumUp">
         <p class="petit">Scanne-moi avec l'appareil photo de ton téléphone pour payer.</p>
+        <p class="petit">Sur la page SumUp, indique ton nom complet : Hélèna retrouvera ainsi ta commande.</p>
         <button onclick="payerSurTablette()">Payer sur la tablette</button>
     </div>
 
