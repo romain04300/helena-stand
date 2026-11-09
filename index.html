@@ -63,14 +63,14 @@
             <button onclick="ouvrirFlash()">Je m'inscris</button>
         </div>
         <div class="carte barre-or">
-            <span class="badge">coup de &#9825;</span>
+            <span class="badge">Coup de &#9825;</span>
             <p class="etiquette">Offre du stand</p>
             <h2>Ton livret</h2>
             <p>Ton chemin de vie expliqué en détail, imprimé, à emporter.</p>
-            <p class="prix">25€ <s>32€</s></p>
+            <p class="prix">25 € <s>32 €</s></p>
             <button onclick="commander('Livret')">Je le veux</button>
         </div>
-                <div class="carte barre-corail">
+        <div class="carte barre-corail">
             <p class="etiquette">Version numérique</p>
             <h2 id="titre-ebook">Ton e-book</h2>
             <p>Tous tes secrets : ta mission, tes forces, tes pièges, ton héritage familial.</p>
@@ -83,8 +83,13 @@
             <p>Séance Conscience : 2 h en visio avec Hélèna, numérologie et psychogénéalogie.</p>
             <p class="petit">Demande sa carte à Hélèna ou appelle le 07 60 02 73 21.</p>
         </div>
+                <div class="carte barre-violet toute-largeur">
+            <p class="etiquette">La collection d'Hélèna</p>
+            <h2>Les Enquêtes de l'Âme</h2>
+            <p>Amour, travail, famille, argent, blessures et croyances, enfant intérieur : choisis la part de ta vie à éclairer.</p>
+            <button onclick="allerA('enquetes')">Je choisis mon enquête</button>
+        </div>
     </div>
-
     <button class="secondaire" onclick="ouvrirContact()">Recevoir des nouvelles d'Hélèna</button>
     <button class="secondaire" onclick="recommencer()">Terminer</button>
 </section>
@@ -94,7 +99,7 @@
     <h1>Numérologie <em>flash</em></h1>
     <p class="etiquette">Ton prénom</p>
     <input id="flash-prenom" type="text" autocomplete="off">
-        <p class="etiquette">Ton téléphone</p>
+    <p class="etiquette">Ton téléphone</p>
     <input id="flash-tel" type="tel" inputmode="tel" autocomplete="off" placeholder="06 12 34 56 78">
     <p class="etiquette">Ton créneau</p>
     <select id="flash-creneau"></select>
@@ -104,7 +109,7 @@
     <button class="secondaire" onclick="allerA('offres')">Retour</button>
 </section>
 
-<!-- ========== PAGE 5b : CONTACT E-BOOK ========== -->
+<!-- ========== PAGE 5b : RESTE EN CONTACT ========== -->
 <section id="contact" class="cachee">
     <h1>Reste en <em>contact</em></h1>
     <p>Reçois les conseils, les dates de salons et les nouveautés d'Hélèna.</p>
@@ -120,6 +125,21 @@
         Tu peux te désinscrire à tout moment en écrivant à contact@helenafuma-therapeute.fr.</p>
     <p id="erreur-contact" class="erreur"></p>
     <button onclick="enregistrerContact()">Je m'inscris</button>
+    <button class="secondaire" onclick="allerA('offres')">Retour</button>
+</section>
+<!-- ========== PAGE 5d : LES ENQUÊTES DE L'ÂME ========== -->
+<section id="enquetes" class="cachee">
+    <h1>Les Enquêtes <em>de l'Âme</em></h1>
+    <p>Quelle part de ta vie veux-tu éclairer ?</p>
+    <div class="choix">
+        <button onclick="commanderEnquete('Amour')">Amour</button>
+        <button onclick="commanderEnquete('Travail')">Travail</button>
+        <button onclick="commanderEnquete('Famille')">Famille</button>
+        <button onclick="commanderEnquete('Argent')">Argent</button>
+        <button onclick="commanderEnquete('Blessures et croyances')">Blessures et croyances</button>
+        <button onclick="commanderEnquete('Enfant intérieur')">Enfant intérieur</button>
+    </div>
+    <p class="petit">Prix sur la boutique d'Hélèna.</p>
     <button class="secondaire" onclick="allerA('offres')">Retour</button>
 </section>
 <!-- ========== PAGE 5c : COMMANDE SUMUP ========== -->
@@ -144,6 +164,7 @@
 
     <button class="secondaire" onclick="allerA('offres')">Retour</button>
 </section>
+
 <!-- ========== PAGE 6 : MERCI ========== -->
 <section id="merci" class="cachee">
     <img src="images/logo-rond.png" class="logo-petit" alt="">
@@ -189,17 +210,20 @@
     </div>
 
     <div class="carte large">
-        <h2>Contacts e-book</h2>
+        <h2>Contacts (nouvelles d'Hélèna)</h2>
         <p id="nb-contacts"></p>
-        <button onclick="exporterContacts()">Exporter (fichier CSV)</button>
         <button class="secondaire" onclick="effacerContacts()">Effacer les contacts</button>
+    </div>
+
+    <div class="carte large">
+        <h2>Export du salon</h2>
+        <p class="petit">Un fichier Excel avec 3 onglets : Contacts, Commandes, Flash.</p>
+        <button onclick="exporterExcel()">Exporter (fichier Excel)</button>
         <p id="msg-contacts" class="petit"></p>
     </div>
 
     <div class="carte large">
         <h2>Réglages du salon</h2>
-        <p class="etiquette">Prix e-book (€)</p>
-        <input id="r-prix-ebook" type="text" inputmode="decimal">
         <p class="etiquette">Prix numérologie flash (€)</p>
         <input id="r-prix-flash" type="text" inputmode="decimal">
         <p class="etiquette">Créneaux flash (séparés par des virgules)</p>
@@ -219,6 +243,7 @@
     <span class="pied-metier">Numérologie karmique transgénérationnelle &amp; libération des mémoires familiales</span>
 </footer>
 
+<script src="xlsx.mini.min.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

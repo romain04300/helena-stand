@@ -1,7 +1,7 @@
 // Mémoire hors connexion de l'appli Hélèna Fuma
-const CACHE = "helena-stand-v9";
+const CACHE = "helena-stand-v11";
 const FICHIERS = [
-  "./", "./index.html", "./style.css", "./app.js", "./manifest.webmanifest",
+  "./", "./index.html", "./style.css", "./app.js", "./xlsx.mini.min.js", "./manifest.webmanifest",
   "./images/logo-rond.png", "./images/branchage2_5.png", "./images/qr-sumup.png",
   "./images/icone-192.png", "./images/icone-512.png"
 ];

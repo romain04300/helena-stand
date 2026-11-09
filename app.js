@@ -3,7 +3,6 @@
 // (Hélèna peut les changer dans son espace : 5 appuis rapides sur le logo)
 // ==============================
 const reglagesParDefaut = {
-    prixEbook: "28",
     prixFlash: "20",
     creneaux: "10h00, 10h30, 11h00, 11h30, 14h00, 14h30, 15h00, 15h30, 16h00, 16h30",
     code: "2026",
@@ -211,7 +210,7 @@ function valider() {
     document.getElementById("frein").textContent = "Ton frein : " + morceaux[2];
 
     // on prépare la page des offres
-    document.getElementById("titre-ebook").textContent = "ton e-book Chemin de Vie " + total;
+    document.getElementById("titre-ebook").textContent = "Ton e-book Chemin de Vie " + total;
     document.getElementById("prix-flash").textContent = reglages.prixFlash + " €";
     document.getElementById("flash-prenom").value = prenom;
     document.getElementById("contact-prenom").value = prenom;
@@ -254,14 +253,14 @@ function ouvrirFlash() {
 
 function inscrireFlash() {
     let prenom = document.getElementById("flash-prenom").value.trim();
-    let tel = document.getElementById("flash-tel").value;          // NOUVEAU
-    tel = tel.replaceAll(" ", "").replaceAll(".", "");              // NOUVEAU
+    let tel = document.getElementById("flash-tel").value;
+    tel = tel.replaceAll(" ", "").replaceAll(".", "");
     let creneau = document.getElementById("flash-creneau").value;
     if (prenom === "" || creneau === "") {
         document.getElementById("erreur-flash").textContent = "Il manque ton prénom ou ton créneau.";
         return;
     }
-    if (tel.length !== 10 || isNaN(tel)) {                          // NOUVEAU
+    if (tel.length !== 10 || isNaN(tel)) {
         document.getElementById("erreur-flash").textContent = "Ton numéro doit faire 10 chiffres (ex. 06 12 34 56 78).";
         return;
     }
@@ -271,7 +270,7 @@ function inscrireFlash() {
         return;
     }
     let liste = lire("hf-flash", []);
-    liste.push({ prenom: prenom, tel: tel, creneau: creneau, chemin: cheminActuel });   // tel AJOUTÉ
+    liste.push({ prenom: prenom, tel: tel, creneau: creneau, chemin: cheminActuel });
     ecrire("hf-flash", liste);
     compter("flash");
 
@@ -279,6 +278,8 @@ function inscrireFlash() {
     document.getElementById("texte-merci").textContent = "Hélèna t'attend à " + creneau + " pour ta numérologie flash.";
     allerA("merci");
 }
+
+
 // ==============================
 // COMMANDE : E-BOOK ET LIVRET (SUMUP)
 // ==============================
@@ -311,7 +312,7 @@ function validerCommande() {
         email: email,
         produit: produitActuel,
         chemin: cheminActuel,
-                payee: false,
+        payee: false,
     });
     ecrire("hf-commandes", commandes);
 
@@ -320,12 +321,15 @@ function validerCommande() {
         "Merci " + prenom + " ! Tu peux payer ton " + produitActuel + " ici :";
     document.getElementById("zone-coordonnees").classList.add("cachee");
     document.getElementById("zone-paiement").classList.remove("cachee");
-
 }
-
+function commanderEnquete(theme) {
+    commander("Enquête de l'Âme : " + theme);
+    document.getElementById("texte-commande").textContent = "Ton Enquête de l'Âme : " + theme;
+}
 function payerSurTablette() {
     window.open(LIEN_SUMUP, "_blank");
 }
+
 
 // ==============================
 // E-BOOK : CONTACT AVEC CONSENTEMENT
@@ -342,21 +346,21 @@ function enregistrerContact() {
 
     if (prenom === "") { erreur.textContent = "Il manque ton prénom."; return; }
     if (!email.includes("@") || !email.includes(".")) { erreur.textContent = "Ton e-mail n'a pas l'air complet."; return; }
-    if (!accord) { erreur.textContent = "Coche la case pour recevoir l'e-book."; return; }
+    if (!accord) { erreur.textContent = "Coche la case pour recevoir des nouvelles."; return; }
 
     let contacts = lire("hf-contacts", []);
     contacts.push({
         prenom: prenom,
         email: email,
         chemin: cheminActuel,
-        interet: "e-book Chemin de Vie " + cheminActuel,
+        interet: "nouvelles",
         date: new Date().toLocaleString("fr-FR"),
     });
     ecrire("hf-contacts", contacts);
     compter("ebook");
 
     document.getElementById("titre-merci").textContent = "Merci " + prenom + " !";
-    document.getElementById("texte-merci").textContent = "Hélèna t'enverra ton e-book Chemin de Vie " + cheminActuel + " par e-mail.";
+    document.getElementById("texte-merci").textContent = "Hélèna te donnera bientôt de ses nouvelles par e-mail.";
     allerA("merci");
 }
 
@@ -447,12 +451,15 @@ function afficherStats() {
 }
 
 let confirmationStats = false;
+
 function exporterStatsPDF() {
     let ancienTitre = document.title;
     document.title = "Stats salon Helena " + new Date().toISOString().slice(0, 10);
     window.print();
     document.title = ancienTitre;
-}function remettreStatsAZero() {
+}
+
+function remettreStatsAZero() {
     if (!confirmationStats) {
         confirmationStats = true;
         document.getElementById("msg-stats").textContent = "Appuie encore une fois pour confirmer.";
@@ -483,6 +490,7 @@ function afficherAdmin() {
         ligne.textContent = personne.creneau + " · " + personne.prenom + " · " + (personne.tel || "pas de numéro") + " (chemin de vie " + (personne.chemin || "?") + ")";
         zone.appendChild(ligne);
     }
+
     // commandes livret / e-book
     let commandes = lire("hf-commandes", []);
     let zoneCommandes = document.getElementById("liste-commandes");
@@ -490,11 +498,12 @@ function afficherAdmin() {
     if (commandes.length === 0) {
         zoneCommandes.innerHTML = '<p class="petit">Aucune commande.</p>';
     }
-       for (let i = 0; i < commandes.length; i++) {
+    for (let i = 0; i < commandes.length; i++) {
         let c = commandes[i];
         let ligne = document.createElement("p");
         ligne.className = "ligne-attente";
-        ligne.textContent = c.heure + " · " + c.prenom + " · " + c.produit + " Chemin de Vie " + c.chemin + " · " + c.email + " ";
+                let detail = c.produit.startsWith("Enquête") ? c.produit : c.produit + " Chemin de Vie " + c.chemin;
+        ligne.textContent = c.heure + " · " + c.prenom + " · " + detail + " · " + c.email + " ";
 
         let boutonPayee = document.createElement("button");
         boutonPayee.className = c.payee ? "mini payee" : "mini";
@@ -510,13 +519,13 @@ function afficherAdmin() {
 
         zoneCommandes.appendChild(ligne);
     }
+
     // contacts
     let contacts = lire("hf-contacts", []);
     document.getElementById("nb-contacts").textContent = contacts.length + " contact(s) enregistré(s) sur cette tablette.";
     document.getElementById("msg-contacts").textContent = "";
 
     // réglages
-    document.getElementById("r-prix-ebook").value = reglages.prixEbook;
     document.getElementById("r-prix-flash").value = reglages.prixFlash;
     document.getElementById("r-creneaux").value = reglages.creneaux;
     document.getElementById("r-code").value = "";
@@ -559,24 +568,39 @@ function supprimerCommande(i) {
     ecrire("hf-commandes", commandes);
     afficherAdmin();
 }
-function exporterContacts() {
+
+function exporterExcel() {
     let contacts = lire("hf-contacts", []);
-    if (contacts.length === 0) {
-        document.getElementById("msg-contacts").textContent = "Aucun contact à exporter.";
+    let commandes = lire("hf-commandes", []);
+    let flash = lire("hf-flash", []);
+    let msg = document.getElementById("msg-contacts");
+
+    if (contacts.length === 0 && commandes.length === 0 && flash.length === 0) {
+        msg.textContent = "Rien à exporter pour l'instant.";
         return;
     }
-    let lignes = ["prenom;email;chemin_de_vie;interet;date"];
-    for (let c of contacts) {
-        lignes.push([c.prenom, c.email, c.chemin, c.interet, c.date].join(";"));
-    }
-    let fichier = new Blob(["﻿" + lignes.join("\n")], { type: "text/csv;charset=utf-8" });
-    let lien = document.createElement("a");
-    lien.href = URL.createObjectURL(fichier);
-    lien.download = "contacts-helena-" + new Date().toISOString().slice(0, 10) + ".csv";
-    document.body.appendChild(lien);
-    lien.click();
-    lien.remove();
-    document.getElementById("msg-contacts").textContent = "Fichier téléchargé. Vérifie-le, puis efface les contacts de la tablette.";
+
+    // une ligne Excel par personne, avec des titres de colonnes clairs
+    let ongletContacts = contacts.map(function (c) {
+        return { "Prénom": c.prenom, "E-mail": c.email, "Chemin de vie": c.chemin, "Date": c.date };
+    });
+    let ongletCommandes = commandes.map(function (c) {
+        return {
+            "Date": c.date, "Heure": c.heure, "Prénom": c.prenom, "E-mail": c.email,
+            "Produit": c.produit, "Chemin de vie": c.chemin, "Payée": c.payee ? "oui" : "non",
+        };
+    });
+    let ongletFlash = flash.map(function (f) {
+        return { "Créneau": f.creneau, "Prénom": f.prenom, "Téléphone": f.tel || "", "Chemin de vie": f.chemin };
+    });
+
+    let classeur = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(classeur, XLSX.utils.json_to_sheet(ongletContacts), "Contacts");
+    XLSX.utils.book_append_sheet(classeur, XLSX.utils.json_to_sheet(ongletCommandes), "Commandes");
+    XLSX.utils.book_append_sheet(classeur, XLSX.utils.json_to_sheet(ongletFlash), "Flash");
+    XLSX.writeFile(classeur, "salon-helena-" + new Date().toISOString().slice(0, 10) + ".xlsx");
+
+    msg.textContent = "Fichier Excel téléchargé. Vérifie-le avant d'effacer quoi que ce soit.";
 }
 
 let confirmationEffacement = false;
@@ -595,7 +619,6 @@ function effacerContacts() {
 }
 
 function enregistrerReglages() {
-    reglages.prixEbook = document.getElementById("r-prix-ebook").value.trim() || reglages.prixEbook;
     reglages.prixFlash = document.getElementById("r-prix-flash").value.trim() || reglages.prixFlash;
     reglages.creneaux = document.getElementById("r-creneaux").value.trim() || reglages.creneaux;
     let nouveauCode = document.getElementById("r-code").value.trim();
