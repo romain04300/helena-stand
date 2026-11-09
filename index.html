@@ -150,10 +150,33 @@
     <p id="texte-commande"></p>
 
     <div id="zone-coordonnees">
-        <p class="etiquette">Ton prénom</p>
-        <input id="commande-prenom" type="text" autocomplete="off">
-        <p class="etiquette">Ton e-mail</p>
+        <p class="petit">Tes coordonnées servent à t'envoyer ta commande.</p>
+        <div class="ligne">
+            <div class="champ">
+                <p class="etiquette">Prénom</p>
+                <input id="commande-prenom" type="text" autocomplete="off">
+            </div>
+            <div class="champ">
+                <p class="etiquette">Nom</p>
+                <input id="commande-nom" type="text" autocomplete="off">
+            </div>
+        </div>
+        <p class="etiquette">E-mail</p>
         <input id="commande-email" type="email" autocomplete="off">
+        <p class="etiquette">Téléphone</p>
+        <input id="commande-tel" type="tel" inputmode="tel" autocomplete="off" placeholder="06 12 34 56 78">
+        <p class="etiquette">Adresse postale</p>
+        <input id="commande-adresse" type="text" autocomplete="off" placeholder="12 rue des Lilas">
+        <div class="ligne">
+            <div class="champ petit-champ">
+                <p class="etiquette">Code postal</p>
+                <input id="commande-cp" type="text" inputmode="numeric" autocomplete="off" placeholder="04300">
+            </div>
+            <div class="champ">
+                <p class="etiquette">Ville</p>
+                <input id="commande-ville" type="text" autocomplete="off">
+            </div>
+        </div>
         <p id="erreur-commande" class="erreur"></p>
         <button onclick="validerCommande()">Je valide ma commande</button>
     </div>

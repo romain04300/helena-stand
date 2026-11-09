@@ -298,18 +298,31 @@ function commander(produit) {
 
 function validerCommande() {
     let prenom = document.getElementById("commande-prenom").value.trim();
+    let nom = document.getElementById("commande-nom").value.trim();
     let email = document.getElementById("commande-email").value.trim();
+    let tel = document.getElementById("commande-tel").value.replaceAll(" ", "").replaceAll(".", "");
+    let adresse = document.getElementById("commande-adresse").value.trim();
+    let cp = document.getElementById("commande-cp").value.trim();
+    let ville = document.getElementById("commande-ville").value.trim();
     let erreur = document.getElementById("erreur-commande");
 
-    if (prenom === "") { erreur.textContent = "Il manque ton prénom."; return; }
+    if (prenom === "" || nom === "") { erreur.textContent = "Il manque ton prénom ou ton nom."; return; }
     if (!email.includes("@") || !email.includes(".")) { erreur.textContent = "Ton e-mail n'a pas l'air complet."; return; }
+    if (tel.length !== 10 || isNaN(tel)) { erreur.textContent = "Ton numéro doit faire 10 chiffres (ex. 06 12 34 56 78)."; return; }
+    if (adresse === "" || ville === "") { erreur.textContent = "Il manque ton adresse ou ta ville."; return; }
+    if (cp.length !== 5 || isNaN(cp)) { erreur.textContent = "Ton code postal doit faire 5 chiffres."; return; }
 
     let commandes = lire("hf-commandes", []);
     commandes.push({
         heure: new Date().toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }),
         date: new Date().toLocaleDateString("fr-FR"),
         prenom: prenom,
+        nom: nom,
         email: email,
+        tel: tel,
+        adresse: adresse,
+        cp: cp,
+        ville: ville,
         produit: produitActuel,
         chemin: cheminActuel,
         payee: false,
@@ -505,7 +518,10 @@ function afficherAdmin() {
         let ligne = document.createElement("p");
         ligne.className = "ligne-attente";
         let detail = c.produit.startsWith("Enquête") ? c.produit : c.produit + " Chemin de Vie " + c.chemin;
-        ligne.textContent = c.heure + " · " + c.prenom + " · " + detail + " · " + c.email + " ";
+        let qui = c.prenom + (c.nom ? " " + c.nom : "");
+        let adresse = c.adresse ? " · " + c.adresse + ", " + c.cp + " " + c.ville : "";
+        let tel = c.tel ? " · " + c.tel : "";
+        ligne.textContent = c.heure + " · " + qui + " · " + detail + " · " + c.email + tel + adresse + " ";
 
         let boutonPayee = document.createElement("button");
         boutonPayee.className = c.payee ? "mini payee" : "mini";
@@ -588,7 +604,9 @@ function exporterExcel() {
     });
     let ongletCommandes = commandes.map(function (c) {
         return {
-            "Date": c.date, "Heure": c.heure, "Prénom": c.prenom, "E-mail": c.email,
+            "Date": c.date, "Heure": c.heure, "Prénom": c.prenom, "Nom": c.nom || "",
+            "E-mail": c.email, "Téléphone": c.tel || "",
+            "Adresse": c.adresse || "", "Code postal": c.cp || "", "Ville": c.ville || "",
             "Produit": c.produit, "Chemin de vie": c.chemin, "Payée": c.payee ? "oui" : "non",
         };
     });
