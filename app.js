@@ -322,10 +322,12 @@ function validerCommande() {
     document.getElementById("zone-coordonnees").classList.add("cachee");
     document.getElementById("zone-paiement").classList.remove("cachee");
 }
+
 function commanderEnquete(theme) {
     commander("Enquête de l'Âme : " + theme);
     document.getElementById("texte-commande").textContent = "Ton Enquête de l'Âme : " + theme;
 }
+
 function payerSurTablette() {
     window.open(LIEN_SUMUP, "_blank");
 }
@@ -502,7 +504,7 @@ function afficherAdmin() {
         let c = commandes[i];
         let ligne = document.createElement("p");
         ligne.className = "ligne-attente";
-                let detail = c.produit.startsWith("Enquête") ? c.produit : c.produit + " Chemin de Vie " + c.chemin;
+        let detail = c.produit.startsWith("Enquête") ? c.produit : c.produit + " Chemin de Vie " + c.chemin;
         ligne.textContent = c.heure + " · " + c.prenom + " · " + detail + " · " + c.email + " ";
 
         let boutonPayee = document.createElement("button");
@@ -642,6 +644,40 @@ remplirDates();
 relancerMinuteur();
 
 // Mémoire hors connexion (l'appli marche sans Internet après la première ouverture)
+// ==============================
+// MISE À JOUR : on propose la nouvelle version
+// ==============================
 if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
-    navigator.serviceWorker.register("sw.js");
+    navigator.serviceWorker.register("sw.js").then(function (inscription) {
+        // une nouvelle version attend déjà
+        if (inscription.waiting && navigator.serviceWorker.controller) {
+            proposerMaj(inscription.waiting);
+        }
+        // une nouvelle version arrive pendant que l'appli est ouverte
+        inscription.addEventListener("updatefound", function () {
+            let nouvelle = inscription.installing;
+            nouvelle.addEventListener("statechange", function () {
+                if (nouvelle.state === "installed" && navigator.serviceWorker.controller) {
+                    proposerMaj(nouvelle);
+                }
+            });
+        });
+        // on vérifie s'il y a du nouveau toutes les 15 minutes
+        setInterval(function () { inscription.update(); }, 15 * 60 * 1000);
+    });
+
+    // quand la nouvelle version prend la main, on recharge la page une seule fois
+    let dejaRecharge = false;
+    navigator.serviceWorker.addEventListener("controllerchange", function () {
+        if (dejaRecharge) return;
+        dejaRecharge = true;
+        location.reload();
+    });
+}
+
+function proposerMaj(nouvelle) {
+    document.getElementById("bandeau-maj").classList.remove("cachee");
+    document.getElementById("bouton-maj").onclick = function () {
+        nouvelle.postMessage("mettre-a-jour");
+    };
 }

@@ -1,5 +1,5 @@
 // Mémoire hors connexion de l'appli Hélèna Fuma
-const CACHE = "helena-stand-v11";
+const CACHE = "helena-stand-v12";
 const FICHIERS = [
   "./", "./index.html", "./style.css", "./app.js", "./xlsx.mini.min.js", "./manifest.webmanifest",
   "./images/logo-rond.png", "./images/branchage2_5.png", "./images/qr-sumup.png",
@@ -8,7 +8,12 @@ const FICHIERS = [
 
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(FICHIERS)));
-  self.skipWaiting();
+  // on n'active PAS tout de suite : l'appli propose d'abord la mise à jour
+});
+
+// quand on appuie sur « Mettre à jour », l'appli nous envoie ce message
+self.addEventListener("message", e => {
+  if (e.data === "mettre-a-jour") self.skipWaiting();
 });
 
 self.addEventListener("activate", e => {
