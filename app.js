@@ -216,7 +216,8 @@ function valider() {
     document.getElementById("frein").textContent = "Ton frein : " + morceaux[2];
 
     // on prépare la page des offres
-    document.getElementById("titre-ebook").textContent = "Ton e-book Chemin de Vie " + total;
+    document.getElementById("titre-cdv").textContent = "Ton Chemin de Vie " + total;
+    document.getElementById("titre-formats-cdv").innerHTML = "Ton <em>Chemin de Vie " + total + "</em>";
     document.getElementById("prix-flash").textContent = reglages.prixFlash + " €";
     document.getElementById("flash-prenom").value = prenom;
     document.getElementById("contact-prenom").value = prenom;
@@ -306,6 +307,11 @@ function commander(produit, cle) {
     allerA("commande");
 }
 
+// CHEMIN DE VIE : choix du format (e-book ou livret)
+function ouvrirFormatsCdv() {
+    allerA("formats-cdv");
+}
+
 // ENQUÊTES DE L'ÂME : d'abord le thème, puis e-book ou livret
 function ouvrirEnquetes() {
     themeChoisi = "";
@@ -367,6 +373,9 @@ function validerCommande() {
     erreur.textContent = "";
     document.getElementById("texte-commande").textContent =
         "Merci " + prenom + " ! Tu peux payer ton " + produitActuel + " ici :";
+    let detailSumup = produitActuel.includes("Enquête") ? produitActuel : produitActuel + " Chemin de Vie " + cheminActuel;
+    document.getElementById("consigne-sumup").textContent =
+        "Sur la page SumUp, indique ton nom complet et, dans « Remarque », écris : " + detailSumup + ".";
     document.getElementById("zone-coordonnees").classList.add("cachee");
     document.getElementById("zone-paiement").classList.remove("cachee");
 }
@@ -728,4 +737,63 @@ function proposerMaj(nouvelle) {
     document.getElementById("bouton-maj").onclick = function () {
         nouvelle.postMessage("mettre-a-jour");
     };
+}
+
+
+// ==============================
+// LE CLIN D'ŒIL : LA CHÈVRE 🐐
+// ==============================
+const PHRASES_CHEVRE = [
+    "Bêêêêê !",
+    "Bêêê… c'est moi qui ai calculé ton chemin de vie.",
+    "Bêêê ! Chemin de vie de la chèvre : 7, la chercheuse… de foin.",
+    "Bêêêê ! Je garde le stand pendant ta pause.",
+    "Bê ! (traduction : je t'aime bien)",
+];
+let numeroChevre = 0;
+
+function chevre() {
+    let bulle = document.getElementById("bulle-chevre");
+    bulle.textContent = PHRASES_CHEVRE[numeroChevre];
+    numeroChevre = (numeroChevre + 1) % PHRASES_CHEVRE.length;
+    bulle.classList.remove("cachee");
+
+    // la chèvre fait un petit saut
+    let bouton = document.getElementById("chevre");
+    bouton.classList.remove("saute");
+    void bouton.offsetWidth;          // relance l'animation
+    bouton.classList.add("saute");
+
+    bele();
+    clearTimeout(window.minuteurChevre);
+    window.minuteurChevre = setTimeout(function () { bulle.classList.add("cachee"); }, 3500);
+}
+
+// un petit « bêêê » fabriqué par le navigateur (marche sans Internet)
+function bele() {
+    try {
+        let audio = new (window.AudioContext || window.webkitAudioContext)();
+        let son = audio.createOscillator();
+        let tremble = audio.createOscillator();
+        let force = audio.createGain();
+        let volume = audio.createGain();
+        son.type = "sawtooth";
+        son.frequency.value = 520;
+        tremble.frequency.value = 22;          // le tremblement du « bêêê »
+        force.gain.value = 45;
+        tremble.connect(force);
+        force.connect(son.frequency);
+        son.connect(volume);
+        volume.connect(audio.destination);
+        let t = audio.currentTime;
+        volume.gain.setValueAtTime(0.0001, t);
+        volume.gain.exponentialRampToValueAtTime(0.15, t + 0.05);
+        volume.gain.setValueAtTime(0.15, t + 0.45);
+        volume.gain.exponentialRampToValueAtTime(0.0001, t + 0.8);
+        son.frequency.linearRampToValueAtTime(440, t + 0.8);
+        son.start(t); tremble.start(t);
+        son.stop(t + 0.85); tremble.stop(t + 0.85);
+    } catch (e) {
+        // pas de son possible : tant pis, la chèvre reste muette
+    }
 }

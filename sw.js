@@ -1,9 +1,9 @@
 // Mémoire hors connexion de l'appli Hélèna Fuma
-const CACHE = "helena-stand-v14";
+const CACHE = "helena-stand-v15";
 const FICHIERS = [
   "./", "./index.html", "./style.css", "./app.js", "./xlsx.mini.min.js", "./manifest.webmanifest",
   "./images/logo-rond.png", "./images/branchage2_5.png", "./images/qr-livret-cdv.png", "./images/qr-ebook-cdv.png",
-  "./images/qr-livret-enquete.png", "./images/qr-ebook-enquete.png",
+  "./images/qr-livret-enquete.png", "./images/qr-ebook-enquete.png", "./images/qr-appli.png",
   "./images/icone-192.png", "./images/icone-512.png"
 ];
 

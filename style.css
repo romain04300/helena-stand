@@ -402,3 +402,46 @@ button.mini.payee { background-color: var(--turquoise); }
 /* le thème choisi dans les Enquêtes de l'Âme */
 .choix button.choisi { background-color: var(--or); }
 #format-enquete { margin-top: 10px; }
+
+/* ==============================
+   LE CLIN D'ŒIL : LA CHÈVRE
+   ============================== */
+#admin { position: relative; }
+button.chevre {
+    position: absolute;
+    right: 8px;
+    bottom: 8px;
+    min-height: 0;
+    padding: 4px;
+    margin: 0;
+    font-size: 22px;
+    line-height: 1;
+    background: transparent;
+    border: none;
+    opacity: 0.35;
+    cursor: pointer;
+}
+button.chevre:hover { opacity: 1; }
+button.chevre.saute { animation: saut-chevre 0.6s ease-out; opacity: 1; }
+@keyframes saut-chevre {
+    0%   { transform: translateY(0) rotate(0deg); }
+    30%  { transform: translateY(-28px) rotate(-15deg); }
+    60%  { transform: translateY(0) rotate(10deg); }
+    80%  { transform: translateY(-8px) rotate(-5deg); }
+    100% { transform: translateY(0) rotate(0deg); }
+}
+.bulle-chevre {
+    position: absolute;
+    right: 44px;
+    bottom: 14px;
+    max-width: 260px;
+    margin: 0;
+    padding: 10px 14px;
+    background: white;
+    border: 2px solid var(--bordure);
+    border-radius: 14px 14px 2px 14px;
+    font-size: 16px;
+    text-align: left;
+    color: var(--nuit);
+}
+@media print { button.chevre, .bulle-chevre { display: none; } }

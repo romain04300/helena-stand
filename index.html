@@ -65,30 +65,23 @@
         <div class="carte barre-or">
             <span class="badge">Coup de &#9825;</span>
             <p class="etiquette">Offre du stand</p>
-            <h2>Ton livret</h2>
-            <p>Ton chemin de vie expliqué en détail, imprimé, à emporter.</p>
-            <p class="prix">25 € <s>32 €</s></p>
-            <button onclick="commander('Livret', 'livret-cdv')">Je le veux</button>
+            <h2 id="titre-cdv">Ton Chemin de Vie</h2>
+            <p>Tous tes secrets : ta mission, tes forces, tes pièges, ton héritage familial.</p>
+            <p class="prix">E-book 15 € · Livret 25 €</p>
+            <button onclick="ouvrirFormatsCdv()">Je choisis mon format</button>
         </div>
         <div class="carte barre-corail">
-            <p class="etiquette">Version numérique</p>
-            <h2 id="titre-ebook">Ton e-book</h2>
-            <p>Tous tes secrets : ta mission, tes forces, tes pièges, ton héritage familial.</p>
-            <p class="prix">15 € <s>19 €</s></p>
-            <button onclick="commander('E-book', 'ebook-cdv')">Je le veux</button>
+            <p class="etiquette">La collection d'Hélèna</p>
+            <h2>Les Enquêtes de l'Âme</h2>
+            <p>Amour, travail, famille, argent, blessures et croyances, enfant intérieur : choisis la part de ta vie à éclairer.</p>
+            <p class="prix">E-book 15 € · Livret 25 €</p>
+            <button onclick="ouvrirEnquetes()">Je choisis mon enquête</button>
         </div>
         <div class="carte barre-turquoise">
             <p class="etiquette">Aller plus loin</p>
             <h2>Méthode Libération</h2>
             <p>Séance Conscience : 2 h en visio avec Hélèna, numérologie et psychogénéalogie.</p>
             <p class="petit">Demande sa carte à Hélèna ou appelle le 07 60 02 73 21.</p>
-        </div>
-        <div class="carte barre-violet toute-largeur">
-            <p class="etiquette">La collection d'Hélèna</p>
-            <h2>Les Enquêtes de l'Âme</h2>
-            <p>Amour, travail, famille, argent, blessures et croyances, enfant intérieur : choisis la part de ta vie à éclairer.</p>
-            <p class="prix">E-book 15 € · Livret 25 €</p>
-            <button onclick="ouvrirEnquetes()">Je choisis mon enquête</button>
         </div>
     </div>
     <button class="secondaire" onclick="ouvrirContact()">Recevoir des nouvelles d'Hélèna</button>
@@ -126,6 +119,30 @@
         Tu peux te désinscrire à tout moment en écrivant à contact@helenafuma-therapeute.fr.</p>
     <p id="erreur-contact" class="erreur"></p>
     <button onclick="enregistrerContact()">Je m'inscris</button>
+    <button class="secondaire" onclick="allerA('offres')">Retour</button>
+</section>
+
+<!-- ========== PAGE 5e : CHEMIN DE VIE, CHOIX DU FORMAT ========== -->
+<section id="formats-cdv" class="cachee">
+    <h1 id="titre-formats-cdv">Ton <em>Chemin de Vie</em></h1>
+    <p>Choisis ton format.</p>
+    <div class="cartes">
+        <div class="carte barre-corail">
+            <p class="etiquette">Version numérique</p>
+            <h2>E-book</h2>
+            <p>Reçu par e-mail, à lire sur ton téléphone ou ton ordinateur.</p>
+            <p class="prix">15 € <s>19 €</s></p>
+            <button onclick="commander('E-book', 'ebook-cdv')">Je le veux</button>
+        </div>
+        <div class="carte barre-or">
+            <span class="badge">Coup de &#9825;</span>
+            <p class="etiquette">Offre du stand</p>
+            <h2>Livret</h2>
+            <p>Ton chemin de vie expliqué en détail, imprimé, à garder.</p>
+            <p class="prix">25 € <s>32 €</s></p>
+            <button onclick="commander('Livret', 'livret-cdv')">Je le veux</button>
+        </div>
+    </div>
     <button class="secondaire" onclick="allerA('offres')">Retour</button>
 </section>
 
@@ -192,7 +209,7 @@
     <div id="zone-paiement" class="cachee">
         <img id="qr-paiement" src="images/qr-livret-cdv.png" class="qr" alt="QR code du paiement SumUp">
         <p class="petit">Scanne-moi avec l'appareil photo de ton téléphone pour payer.</p>
-        <p class="petit">Sur la page SumUp, indique ton nom complet : Hélèna retrouvera ainsi ta commande.</p>
+        <p class="petit" id="consigne-sumup">Sur la page SumUp, indique ton nom complet : Hélèna retrouvera ainsi ta commande.</p>
         <button onclick="payerSurTablette()">Payer sur la tablette</button>
     </div>
 
@@ -268,7 +285,18 @@
         <p id="msg-reglages" class="petit"></p>
     </div>
 
+    <div class="carte large">
+        <h2>QR code de l'appli</h2>
+        <p class="petit">À faire scanner aux visiteurs : ils calculent leur chemin de vie sur leur téléphone.</p>
+        <img src="images/qr-appli.png" class="qr" alt="QR code de l'appli">
+        <p class="petit">romain04300.github.io/helena-stand</p>
+    </div>
+
     <button onclick="recommencer()">Quitter l'espace Hélèna</button>
+
+    <!-- petit clin d'œil -->
+    <button id="chevre" class="chevre" onclick="chevre()" aria-label="Une chèvre">🐐</button>
+    <p id="bulle-chevre" class="bulle-chevre cachee"></p>
 </section>
 
 <!-- ========== BANDEAU DE MISE À JOUR ========== -->
